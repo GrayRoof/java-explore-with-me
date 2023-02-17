@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 public class StatisticView {
-    private String app;
-    private String uri;
-    private long hits;
+    String app;
+    String uri;
+    long hits;
 }

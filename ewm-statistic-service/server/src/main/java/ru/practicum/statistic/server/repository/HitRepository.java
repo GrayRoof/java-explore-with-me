@@ -11,15 +11,15 @@ import java.util.List;
 
 public interface HitRepository extends JpaRepository<Hit, Long> {
 
-    @Query(value = "SELECT new ru.practicum.statistic.server.model.StatisticView(Hit.app, Hit.uri, COUNT (Hit.ip)) " +
-            "FROM Hit " +
-            "WHERE Hit.timestamp BETWEEN ?1 AND ?2 AND Hit.uri IN ?3 " +
-            "GROUP BY Hit.app, Hit.uri ")
+    @Query(value = "SELECT new ru.practicum.statistic.server.model.StatisticView(h.app, h.uri, COUNT (h.ip)) " +
+            "FROM Hit h " +
+            "WHERE h.timestamp BETWEEN ?1 AND ?2 AND h.uri IN ?3 " +
+            "GROUP BY h.app, h.uri ")
     List<StatisticView> findNotUniqueIP(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query(value = "SELECT new ru.practicum.statistic.server.model.StatisticView(Hit.app, Hit.uri, COUNT (DISTINCT Hit.ip)) " +
-            "FROM Hit " +
-            "WHERE Hit.timestamp BETWEEN ?1 AND ?2 AND Hit.uri IN ?3 " +
-            "GROUP BY Hit.app, Hit.uri")
+    @Query(value = "SELECT new ru.practicum.statistic.server.model.StatisticView(h.app, h.uri, COUNT (DISTINCT h.ip)) " +
+            "FROM Hit h " +
+            "WHERE h.timestamp BETWEEN ?1 AND ?2 AND h.uri IN ?3 " +
+            "GROUP BY h.app, h.uri")
     List<StatisticView> findUniqueIp(LocalDateTime start, LocalDateTime end, List<String> uris);
 }
