@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 import ru.practicum.statistic.dto.HitDto;
 import ru.practicum.statistic.dto.StatisticViewDto;
 
@@ -21,23 +20,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-@Slf4j
 
+@Slf4j
 public class StatisticHttpClient {
 
     private final HttpClient httpClient;
-    private final String application;
+    private final String app;
     private final String statsServiceUri;
     private final ObjectMapper mapper;
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
-    public StatisticHttpClient(@Value("${stats-service.uri}") String statsServiceUri,
-                               @Value("${spring.application.name}") String application,
+    public StatisticHttpClient(@Value("${ewm-statistic-service.uri}") String statsServiceUri,
+                               @Value("${spring.application.name}") String app,
                                ObjectMapper mapper) {
-        this.application = application;
+        this.app = app;
         this.statsServiceUri = statsServiceUri;
         this.mapper = mapper;
         this.httpClient = HttpClient.newBuilder()
@@ -48,7 +46,7 @@ public class StatisticHttpClient {
     public void addHit(HttpServletRequest request) {
 
         HitDto hitDto =  new HitDto();
-        hitDto.setApp(application);
+        hitDto.setApp(app);
         hitDto.setUri(request.getRequestURI());
         hitDto.setIp(request.getRemoteAddr());
         hitDto.setTimestamp(LocalDateTime.now().format(dateTimeFormatter));
@@ -75,7 +73,7 @@ public class StatisticHttpClient {
     public List<StatisticViewDto> getStatistic(String start, String end, List<String> uris, Boolean unique) {
         try {
             String queryString = toQueryString(start, end, uris, unique);
-
+            log.info("StatisticHttpClient: получить данные по запросу {}", queryString);
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(URI.create(statsServiceUri + "/stats" + queryString))
                     .header(HttpHeaders.ACCEPT, "application/json")

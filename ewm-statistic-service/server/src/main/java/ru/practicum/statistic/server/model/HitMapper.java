@@ -18,6 +18,16 @@ public class HitMapper {
         return hit;
     }
 
+    public static HitDto toHitDto(Hit hit) {
+        HitDto hitDto = new HitDto();
+        hitDto.setApp(hit.getApp());
+        hitDto.setIp(hit.getIp());
+        hitDto.setUri(hit.getUri());
+        hitDto.setTimestamp(hit.getTimestamp().toString());
+
+        return hitDto;
+    }
+
     public static StatisticViewDto toStatisticViewDto(StatisticView statisticView) {
         StatisticViewDto statisticViewDto = new StatisticViewDto();
         statisticViewDto.setApp(statisticView.getApp());

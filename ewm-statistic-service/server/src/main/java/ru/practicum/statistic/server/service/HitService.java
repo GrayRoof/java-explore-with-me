@@ -1,7 +1,9 @@
 package ru.practicum.statistic.server.service;
 
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.statistic.dto.HitDto;
 import ru.practicum.statistic.dto.StatisticViewDto;
@@ -16,26 +18,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Slf4j
+@Transactional(readOnly = true)
 public class HitService {
 
     private final HitRepository hitRepository;
 
-    public void add(HitDto hitDto) {
+    @Transactional
+    public HitDto add(HitDto hitDto) {
         Hit hit = HitMapper.toHit(hitDto);
         hitRepository.save(hit);
+        return hitDto;
     }
 
-    public List<StatisticViewDto> getStatistic(String start, String end, List<String> uris, boolean unique) {
+    public List<StatisticViewDto> getStatistic(String start, String end, String[] uris, boolean unique) {
         LocalDateTime startDateTime = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         LocalDateTime endDateTime = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         List<StatisticView> result;
         if (!unique) {
-            result = hitRepository.findNotUniqueIP(startDateTime, endDateTime, uris);
+            result = hitRepository.findNotUniqueIP(startDateTime, endDateTime, List.of(uris));
         } else {
-            result = hitRepository.findUniqueIp(startDateTime, endDateTime, uris);
+            result = hitRepository.findUniqueIp(startDateTime, endDateTime, List.of(uris));
         }
-
+        log.info(result.toString());
         return result.stream().map(HitMapper::toStatisticViewDto).collect(Collectors.toList());
     }
 }
