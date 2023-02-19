@@ -2,7 +2,6 @@ package ru.practicum.statistic.server.model;
 
 import lombok.*;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter

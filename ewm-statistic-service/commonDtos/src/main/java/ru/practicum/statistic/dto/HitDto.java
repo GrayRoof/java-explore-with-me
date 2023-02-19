@@ -5,19 +5,18 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @ToString
 public class HitDto {
     @NotBlank
-    private String app;
+    String app;
 
     @NotBlank
-    private String uri;
+    String uri;
 
     @NotBlank
-    private String ip;
+    String ip;
 
-    private String timestamp;
+    String timestamp;
 }
