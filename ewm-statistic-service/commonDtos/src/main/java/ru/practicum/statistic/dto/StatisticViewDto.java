@@ -11,10 +11,8 @@ import javax.validation.constraints.NotBlank;
 public class StatisticViewDto {
     @NotBlank
     String app;
-
     @NotBlank
     String uri;
-
     long hits;
 }
 
