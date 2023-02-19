@@ -63,6 +63,9 @@ public class StatisticHttpClient {
                     .build();
             httpClient.send(httpRequest, HttpResponse.BodyHandlers.discarding());
 
+        } catch (InterruptedException e) {
+            log.error("Произошло непредвиденное прерывание потока", e);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             log.error("Не удалось сохранить информацию о том, что на uri конкретного сервиса был отправлен " +
                     "запрос пользователем", e);
@@ -82,9 +85,13 @@ public class StatisticHttpClient {
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
             if (HttpStatus.valueOf(response.statusCode()).is2xxSuccessful()) {
-                return mapper.readValue(response.body(), new TypeReference<>(){});
+                return mapper.readValue(response.body(), new TypeReference<>() {
+                });
             }
 
+        } catch (InterruptedException e) {
+            log.error("Произошло непредвиденное прерывание потока", e);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             log.error("Не удалось получить статистику по запросу: " + uris, e);
         }
@@ -96,7 +103,7 @@ public class StatisticHttpClient {
 
         String queryString = String.format("?start=%s&end=%s&unique=%b",
                 start, end, unique);
-        if (uris.size() > 0) {
+        if (!uris.isEmpty()) {
             queryString += "&uris=" + String.join(",", uris);
         }
 
