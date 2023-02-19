@@ -5,13 +5,12 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @Entity
-@EqualsAndHashCode(of = "id")
 @Table(name = "hits")
 public class Hit {
     @Id
@@ -30,4 +29,20 @@ public class Hit {
 
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
+
+    @Override
+    public int hashCode() {
+        final int rate = 31;
+        int result = 1;
+        result = (int) (rate * result + getId());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Hit)) return false;
+        Hit other = (Hit) o;
+        return this.getId() == null ? other.getId() == null : this.getId().equals(other.getId());
+    }
 }
