@@ -3,7 +3,7 @@ package ru.practikum.ewm.general.service.publicAPI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practikum.ewm.general.model.EventMapper;
+import ru.practikum.ewm.general.model.mapper.EventMapper;
 import ru.practikum.ewm.general.model.SortMethod;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
 import ru.practikum.ewm.general.repository.EventExtraFilterRepository;

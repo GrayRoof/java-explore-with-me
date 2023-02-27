@@ -1,7 +1,8 @@
-package ru.practikum.ewm.general.model;
+package ru.practikum.ewm.general.model.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.practikum.ewm.general.model.User;
 import ru.practikum.ewm.general.model.dto.UserDto;
 import ru.practikum.ewm.general.model.dto.UserShortDto;
 

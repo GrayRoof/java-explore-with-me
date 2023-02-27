@@ -3,7 +3,7 @@ package ru.practikum.ewm.general.service.publicAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practikum.ewm.general.model.CategoryMapper;
+import ru.practikum.ewm.general.model.mapper.CategoryMapper;
 import ru.practikum.ewm.general.model.dto.CategoryDto;
 import ru.practikum.ewm.general.pagination.OffsetPageable;
 import ru.practikum.ewm.general.repository.CategoryRepository;

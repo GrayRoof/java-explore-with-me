@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practikum.ewm.general.exception.NotFoundException;
 import ru.practikum.ewm.general.model.User;
-import ru.practikum.ewm.general.model.UserMapper;
+import ru.practikum.ewm.general.model.mapper.UserMapper;
 import ru.practikum.ewm.general.model.dto.UserDto;
 import ru.practikum.ewm.general.pagination.OffsetPageable;
 import ru.practikum.ewm.general.repository.UserRepository;

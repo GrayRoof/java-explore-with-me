@@ -20,11 +20,11 @@ public class CompilationPublicController {
             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(required = false) Boolean pinned) {
-        return compilationPublicService.findAll(pinned, from, size);
+        return compilationPublicService.getAll(pinned, from, size);
     }
 
     @GetMapping("/{compId}")
     public CompilationDto findById(@PathVariable Long compId) {
-        return compilationPublicService.findById(compId);
+        return compilationPublicService.get(compId);
     }
 }

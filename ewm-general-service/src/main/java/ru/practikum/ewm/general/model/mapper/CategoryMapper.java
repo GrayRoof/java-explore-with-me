@@ -1,5 +1,6 @@
-package ru.practikum.ewm.general.model;
+package ru.practikum.ewm.general.model.mapper;
 
+import ru.practikum.ewm.general.model.Category;
 import ru.practikum.ewm.general.model.dto.CategoryDto;
 import ru.practikum.ewm.general.model.dto.NewCategoryDto;
 

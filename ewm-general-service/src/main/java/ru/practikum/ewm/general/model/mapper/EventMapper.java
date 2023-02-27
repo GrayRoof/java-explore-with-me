@@ -1,5 +1,9 @@
-package ru.practikum.ewm.general.model;
+package ru.practikum.ewm.general.model.mapper;
 
+import ru.practikum.ewm.general.model.Category;
+import ru.practikum.ewm.general.model.Event;
+import ru.practikum.ewm.general.model.EventState;
+import ru.practikum.ewm.general.model.User;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
 import ru.practikum.ewm.general.model.dto.EventShortDto;
 import ru.practikum.ewm.general.model.dto.NewEventDto;
