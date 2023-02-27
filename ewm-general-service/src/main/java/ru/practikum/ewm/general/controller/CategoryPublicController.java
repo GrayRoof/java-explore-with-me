@@ -20,11 +20,11 @@ public class CategoryPublicController {
     public Collection<CategoryDto> findAllCategories(
             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        return service.findAllCategories(from, size);
+        return service.getAll(from, size);
     }
 
     @GetMapping("/{id}")
     public CategoryDto findCategoryById(@PathVariable Long id) {
-        return service.findCategoryById(id);
+        return service.get(id);
     }
 }

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.model.dto.UserDto;
-import ru.practikum.ewm.general.service.UserService;
+import ru.practikum.ewm.general.service.adminAPI.UserAdminService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -17,19 +17,19 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserAdminService userAdminService;
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {
-        return userService.add(userDto);
+        return userAdminService.add(userDto);
     }
 
     @GetMapping()
     public Collection<UserDto> findUsers(@RequestParam Collection<Long> ids,
                                          @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                          @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        return userService.getAll(ids, from, size);
+        return userAdminService.getAll(ids, from, size);
     }
 
 }

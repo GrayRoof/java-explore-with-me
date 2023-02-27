@@ -18,15 +18,17 @@ public class CategoryPublicServiceImpl implements CategoryPublicService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Collection<CategoryDto> findAllCategories(Integer from, Integer size) {
+    public CategoryDto get(Long id) {
+
+        return CategoryMapper.toDto(categoryRepository.get(id));
+    }
+
+    @Override
+    public Collection<CategoryDto> getAll(Integer from, Integer size) {
+
         return categoryRepository.findAll(OffsetPageable.of(from, size, Sort.unsorted()))
                 .stream()
                 .map(CategoryMapper::toDto)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public CategoryDto findCategoryById(Long id) {
-        return CategoryMapper.toDto(categoryRepository.get(id));
     }
 }

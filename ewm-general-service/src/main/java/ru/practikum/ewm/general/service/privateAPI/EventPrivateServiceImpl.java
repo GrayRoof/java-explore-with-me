@@ -10,7 +10,7 @@ import ru.practikum.ewm.general.model.*;
 import ru.practikum.ewm.general.model.dto.*;
 import ru.practikum.ewm.general.pagination.OffsetPageable;
 import ru.practikum.ewm.general.repository.EventRepository;
-import ru.practikum.ewm.general.service.UserService;
+import ru.practikum.ewm.general.service.adminAPI.UserAdminService;
 import ru.practikum.ewm.general.service.publicAPI.CategoryPublicService;
 
 import javax.transaction.Transactional;
@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 public class EventPrivateServiceImpl implements EventPrivateService {
 
     private final EventRepository eventRepository;
-    private final UserService userService;
+    private final UserAdminService userAdminService;
     private final CategoryPublicService categoryService;
 
     @Override
     public EventFullDto getForOwner(long eventId, long userId) {
         Event event = eventRepository.get(eventId);
-        User user = UserMapper.toUser(userService.get(userId));
+        User user = UserMapper.toUser(userAdminService.get(userId));
         if (!event.getInitiator().equals(user)) {
             throw new NotFoundException("Текущий пользователь не является Инициатором данного события!");
         }
@@ -56,8 +56,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     @Transactional
     public EventFullDto createEvent(long userId, NewEventDto dto) {
-        User initiator = UserMapper.toUser(userService.get(userId));
-        Category category = CategoryMapper.toCategory(categoryService.findCategoryById(dto.getCategory()));
+        User initiator = UserMapper.toUser(userAdminService.get(userId));
+        Category category = CategoryMapper.toCategory(categoryService.get(dto.getCategory()));
         Event newEvent = EventMapper.toEvent(dto, initiator, category);
         if (newEvent.getCreatedOn().plusHours(2).isAfter(newEvent.getEventDate())) {
             throw new NotValidException("Событие нельзя создать менеее чем за 2 часа до его даты проведения!");
@@ -68,7 +68,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public EventFullDto update(long userId, EventUpdateDto dto) {
-        User initiator = UserMapper.toUser(userService.get(userId));
+        User initiator = UserMapper.toUser(userAdminService.get(userId));
 
         Event event = eventRepository.get(dto.getEventId());
         if (!event.getInitiator().equals(initiator)) {
@@ -81,7 +81,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             event.setAnnotation(dto.getAnnotation());
         }
         if (dto.getCategory() != null) {
-            event.setCategory(CategoryMapper.toCategory(categoryService.findCategoryById(dto.getCategory())));
+            event.setCategory(CategoryMapper.toCategory(categoryService.get(dto.getCategory())));
         }
         if (dto.getDescription() != null) {
             event.setDescription(dto.getDescription());
@@ -115,7 +115,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public EventFullDto cancelEvent(long eventId, long userId) {
-        User initiator = UserMapper.toUser(userService.get(userId));
+        User initiator = UserMapper.toUser(userAdminService.get(userId));
         Event event = eventRepository.get(eventId);
         if (!event.getInitiator().equals(initiator)) {
             throw new NotFoundException("initiator");

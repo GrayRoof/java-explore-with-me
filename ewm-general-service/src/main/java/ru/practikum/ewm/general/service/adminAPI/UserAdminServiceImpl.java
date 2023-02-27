@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.service;
+package ru.practikum.ewm.general.service.adminAPI;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserAdminServiceImpl implements UserAdminService {
 
     private final UserRepository userRepository;
 

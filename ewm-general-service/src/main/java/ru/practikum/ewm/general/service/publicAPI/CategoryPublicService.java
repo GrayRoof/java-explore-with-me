@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public interface CategoryPublicService {
 
-    Collection<CategoryDto> findAllCategories(Integer from, Integer size);
+    Collection<CategoryDto> getAll(Integer from, Integer size);
 
-    CategoryDto findCategoryById(Long id);
+    CategoryDto get(Long id);
 }
