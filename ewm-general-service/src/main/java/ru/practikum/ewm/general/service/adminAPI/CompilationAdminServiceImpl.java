@@ -3,6 +3,7 @@ package ru.practikum.ewm.general.service.adminAPI;
 import ru.practikum.ewm.general.model.dto.CompilationDto;
 import ru.practikum.ewm.general.model.dto.NewCompilationDto;
 
+// TODO
 public class CompilationAdminServiceImpl implements CompilationAdminService {
     @Override
     public CompilationDto create(NewCompilationDto dto) {

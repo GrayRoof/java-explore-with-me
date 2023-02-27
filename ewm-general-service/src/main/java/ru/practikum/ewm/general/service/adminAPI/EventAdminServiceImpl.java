@@ -10,6 +10,7 @@ import ru.practikum.ewm.general.repository.EventRepository;
 
 import java.util.List;
 
+// TODO
 @Service
 @Slf4j
 @RequiredArgsConstructor

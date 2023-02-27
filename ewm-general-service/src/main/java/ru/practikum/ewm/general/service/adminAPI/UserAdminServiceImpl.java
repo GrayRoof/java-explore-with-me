@@ -25,7 +25,7 @@ public class UserAdminServiceImpl implements UserAdminService {
 
     @Override
     public UserDto get(long id) throws NotFoundException {
-        return UserMapper.toDto(userRepository.get(id));
+        return UserMapper.toDto(getEntity(id));
     }
 
     @Override
@@ -39,6 +39,11 @@ public class UserAdminServiceImpl implements UserAdminService {
         return result.stream()
                 .map(UserMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public User getEntity(long id) {
+        return userRepository.get(id);
     }
 
     @Override

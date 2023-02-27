@@ -3,6 +3,7 @@ package ru.practikum.ewm.general.service.publicAPI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practikum.ewm.general.model.Event;
 import ru.practikum.ewm.general.model.mapper.EventMapper;
 import ru.practikum.ewm.general.model.SortMethod;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+// TODO
 
 
 @Service
@@ -26,9 +28,9 @@ public class EventPublicServiceImpl implements EventPublicService {
 
 
     @Override
-    public List<EventFullDto> findAll(String text, List<Long> categories, Boolean paid, String rangeStart,
-                                      String rangeEnd, Boolean onlyAvailable, SortMethod sortMethod, Integer from,
-                                      Integer size) {
+    public List<EventFullDto> getAll(String text, List<Long> categories, Boolean paid, String rangeStart,
+                                     String rangeEnd, Boolean onlyAvailable, SortMethod sortMethod, Integer from,
+                                     Integer size) {
         LocalDateTime start = LocalDateTime.parse(rangeStart, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         LocalDateTime end = LocalDateTime.parse(rangeEnd, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -36,11 +38,19 @@ public class EventPublicServiceImpl implements EventPublicService {
     }
 
     @Override
-    public EventFullDto findById(long eventId) {
-        return EventMapper.toFullDto(eventRepository.get(eventId), 0L);
+    public Event getEntity(long eventId) {
+
+        return eventRepository.get(eventId);
     }
 
-    private boolean isEventAvailable(long eventId) {
+    @Override
+    public EventFullDto get(long eventId) {
+
+        return EventMapper.toFullDto(getEntity(eventId), 0L);
+    }
+
+    @Override
+    public boolean isEventAvailable(long eventId) {
         return false;
     }
 }
