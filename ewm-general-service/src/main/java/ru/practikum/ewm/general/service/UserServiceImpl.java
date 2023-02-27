@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto get(long id) throws NotFoundException {
-        return UserMapper.toUserDto(userRepository.get(id));
+        return UserMapper.toDto(userRepository.get(id));
     }
 
     @Override
@@ -37,14 +37,14 @@ public class UserServiceImpl implements UserService {
             result = userRepository.findAllByIdIn(ids, OffsetPageable.of(from, size, Sort.unsorted()));
         }
         return result.stream()
-                .map(UserMapper::toUserDto)
+                .map(UserMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserDto add(UserDto userDto) {
         User user = userRepository.save(UserMapper.toUser(userDto));
-        return UserMapper.toUserDto(user);
+        return UserMapper.toDto(user);
     }
 
     @Override
