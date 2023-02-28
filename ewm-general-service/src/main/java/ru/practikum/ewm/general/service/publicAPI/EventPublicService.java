@@ -24,4 +24,6 @@ public interface EventPublicService {
     Event getEntity(long eventId);
 
     boolean isEventAvailable(long eventId);
+
+    Collection<Event> findAllByIdIn(Collection<Long> ids);
 }

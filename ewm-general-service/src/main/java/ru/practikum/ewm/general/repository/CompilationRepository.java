@@ -1,5 +1,6 @@
 package ru.practikum.ewm.general.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,5 +17,5 @@ public interface CompilationRepository extends JpaRepository<Compilation, Long> 
                                id + " не зарегистрирована!"));
     }
 
-    Collection<Compilation> findByPinned(Boolean pinned, Pageable pageable);
+    Page<Compilation> findByPinned(Boolean pinned, Pageable pageable);
 }

@@ -15,5 +15,7 @@ public interface RequestRepository extends JpaRepository<ParticipationRequest, L
     }
     Collection<ParticipationRequest> findAllByRequesterId(long userId);
 
+    Collection<ParticipationRequest> findAllByEventIdAndStatus(long eventId, RequestStatus status);
+
     boolean existsByIdAndRequesterIdAndStatusIn(long id, long userId, Collection<RequestStatus> statuses);
 }

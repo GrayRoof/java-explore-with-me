@@ -3,16 +3,19 @@ package ru.practikum.ewm.general.service.publicAPI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practikum.ewm.general.exception.NotFoundException;
 import ru.practikum.ewm.general.model.Event;
 import ru.practikum.ewm.general.model.mapper.EventMapper;
 import ru.practikum.ewm.general.model.SortMethod;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
 import ru.practikum.ewm.general.repository.EventExtraFilterRepository;
 import ru.practikum.ewm.general.repository.EventRepository;
+import ru.practikum.ewm.general.service.privateAPI.RequestPrivateService;
 
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 
 // TODO
@@ -25,6 +28,7 @@ public class EventPublicServiceImpl implements EventPublicService {
 
     private final EventRepository eventRepository;
     private final EventExtraFilterRepository filterRepository;
+    private final RequestPrivateService requestPrivateService;
 
 
     @Override
@@ -45,12 +49,24 @@ public class EventPublicServiceImpl implements EventPublicService {
 
     @Override
     public EventFullDto get(long eventId) {
-
         return EventMapper.toFullDto(getEntity(eventId), 0L);
     }
 
     @Override
     public boolean isEventAvailable(long eventId) {
-        return false;
+        Event event = getEntity(eventId);
+        return (event.getParticipantLimit() - requestPrivateService
+                .getCountConfirmedForEvent(eventId) > 0) ||
+                event.getParticipantLimit() == 0;
+    }
+
+    @Override
+    public Collection<Event> findAllByIdIn(Collection<Long> ids) {
+        Collection<Event> events = eventRepository.findAllByIdIn(ids);
+        events.forEach(event -> {
+            if (!ids.contains(event.getId())) {
+                throw new NotFoundException("not exist");
+            }});
+        return events;
     }
 }

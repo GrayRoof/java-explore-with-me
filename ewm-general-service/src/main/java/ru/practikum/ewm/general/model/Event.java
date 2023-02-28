@@ -17,23 +17,26 @@ public class Event {
     long id;
     String annotation;
     @ManyToOne
-    @JoinColumn(name = "categoryID")
+    @JoinColumn(name = "categoryid")
     Category category;
     @Column(name = "created")
     LocalDateTime createdOn;
     String description;
+    @Column(name = "eventdate")
     LocalDateTime eventDate;
     @ManyToOne
-    @JoinColumn(name = "initiatorID")
+    @JoinColumn(name = "initiatorid")
     User initiator;
     @ManyToOne
-    @JoinColumn(name = "locationID")
+    @JoinColumn(name = "locationid")
     EventLocation location;
     boolean paid;
     String title;
     @Transient
     long views;
+    @Column(name = "participantlimit")
     int participantLimit;
+    @Column(name = "requestmoderation")
     boolean requestModeration;
     @Column(name = "published")
     LocalDateTime publishedOn;

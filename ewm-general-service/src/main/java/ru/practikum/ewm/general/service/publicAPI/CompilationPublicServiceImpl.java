@@ -2,6 +2,7 @@ package ru.practikum.ewm.general.service.publicAPI;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practikum.ewm.general.model.Compilation;
@@ -34,7 +35,7 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
 
     @Override
     public Collection<CompilationDto> getAll(Boolean pinned, Integer from, Integer size) {
-        Collection<Compilation> compilations = compilationRepository.findByPinned(pinned,
+        Page<Compilation> compilations = compilationRepository.findByPinned(pinned,
                 OffsetPageable.of(from, size, Sort.unsorted()));
         return compilations.stream()
                 .map(compilation -> CompilationMapper.toDto(compilation, getShortDtoList(compilation)))

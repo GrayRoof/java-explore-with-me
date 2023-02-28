@@ -9,7 +9,7 @@ import java.util.Date;
 @Value
 public class ErrorMessage {
     Date timestamp;
-    int statusCode;
+    int status;
     String error;
     String path;
 }

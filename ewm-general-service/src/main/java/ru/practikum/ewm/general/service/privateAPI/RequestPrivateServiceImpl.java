@@ -62,6 +62,11 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
         return RequestMapper.toDto(requestRepository.save(request));
     }
 
+    @Override
+    public int getCountConfirmedForEvent(long eventId) {
+        return requestRepository.findAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED).size();
+    }
+
     private void checkNewRequest(Event event, User requester) {
         if (event.getInitiator().equals(requester)) {
             throw new ForbiddenException("initiator");

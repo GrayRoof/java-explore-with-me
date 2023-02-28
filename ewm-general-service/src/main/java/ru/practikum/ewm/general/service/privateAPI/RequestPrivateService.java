@@ -11,4 +11,6 @@ public interface RequestPrivateService {
     RequestDto create(long userId, long eventId);
 
     RequestDto cancel(long userId, long requestId);
+
+    int getCountConfirmedForEvent(long eventId);
 }

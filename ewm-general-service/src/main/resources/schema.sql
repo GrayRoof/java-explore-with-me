@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS events
     created             TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     eventDate           TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     paid                BOOLEAN                                 NOT NULL,
-    locationID          BIGINT                                  NOT NULL,
+    locationID          BIGINT,
     initiatorID         BIGINT                                  NOT NULL,
     categoryID          BIGINT                                  NOT NULL,
     participantLimit    INT,
