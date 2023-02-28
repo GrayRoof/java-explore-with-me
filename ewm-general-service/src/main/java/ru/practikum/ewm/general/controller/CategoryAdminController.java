@@ -19,9 +19,10 @@ public class CategoryAdminController {
         return service.createCategory(dto);
     }
 
-    @PatchMapping()
-    public CategoryDto updateCategory(@Valid @RequestBody CategoryDto dto) {
-        return service.updateCategory(dto);
+    @PatchMapping("/{id}")
+    public CategoryDto updateCategory(@Valid @RequestBody CategoryDto dto,
+                                      @PathVariable Long id) {
+        return service.updateCategory(dto, id);
     }
 
     @DeleteMapping("/{id}")

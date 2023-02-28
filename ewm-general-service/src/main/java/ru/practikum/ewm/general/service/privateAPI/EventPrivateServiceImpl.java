@@ -70,11 +70,11 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     }
 
     @Override
-    public EventFullDto update(long userId, EventUpdateDto dto) {
-        User initiator = UserMapper.toUser(userAdminService.get(userId));
+    public EventFullDto update(long userId, long eventId, EventUpdateDto dto) {
 
-        Event event = eventRepository.get(dto.getEventId());
-        if (!event.getInitiator().equals(initiator)) {
+        User initiator = UserMapper.toUser(userAdminService.get(userId));
+        Event event = eventRepository.get(eventId);
+        if (event.getInitiator().getId() != initiator.getId()) {
             throw new NotFoundException("Not owner");
         }
         if (event.getState().equals(EventState.PUBLISHED)) {

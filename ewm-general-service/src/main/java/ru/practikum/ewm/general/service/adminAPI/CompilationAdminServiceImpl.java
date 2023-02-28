@@ -13,6 +13,7 @@ import ru.practikum.ewm.general.model.mapper.EventMapper;
 import ru.practikum.ewm.general.repository.CompilationRepository;
 import ru.practikum.ewm.general.service.publicAPI.EventPublicService;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     private final EventPublicService eventPublicService;
     @Override
     public CompilationDto create(NewCompilationDto dto) {
-        Set<Event> events = (Set<Event>) eventPublicService.findAllByIdIn(dto.getEvents());
+        Set<Event> events = new HashSet<>(eventPublicService.findAllByIdIn(dto.getEvents()));
         Compilation newCompilation = CompilationMapper.toCompilation(dto, events);
 
         return CompilationMapper.toDto(compilationRepository.save(newCompilation),

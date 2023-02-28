@@ -41,6 +41,7 @@ public class EventAdminServiceImpl implements EventAdminService {
                                       String rangeEnd,
                                       Integer from,
                                       Integer size) {
+
         return null;
     }
 }

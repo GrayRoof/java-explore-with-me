@@ -24,8 +24,8 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     }
 
     @Override
-    public CategoryDto updateCategory(CategoryDto dto) {
-        Category category = categoryRepository.get(dto.getId());
+    public CategoryDto updateCategory(CategoryDto dto, long categoryId) {
+        Category category = categoryRepository.get(categoryId);
         category.setName(dto.getName());
         CategoryDto categoryDto = CategoryMapper.toDto(categoryRepository.save(category));
         log.info("Категория с id = {} была обновлена, новое имя - {}", categoryDto.getId(), categoryDto.getName());

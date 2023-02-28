@@ -6,6 +6,7 @@ import ru.practikum.ewm.general.model.dto.CompilationDto;
 import ru.practikum.ewm.general.model.dto.NewCompilationDto;
 import ru.practikum.ewm.general.service.adminAPI.CompilationAdminService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
 @RestController
@@ -16,31 +17,31 @@ public class CompilationAdminController {
     private final CompilationAdminService compilationAdminService;
 
     @PostMapping()
-    public CompilationDto create(@RequestBody NewCompilationDto dto) {
+    public CompilationDto create(@Valid @RequestBody NewCompilationDto dto) {
         return compilationAdminService.create(dto);
     }
 
-    @DeleteMapping("{compId}")
+    @DeleteMapping("{compilationId}")
     public void delete(@PathVariable @Positive long compilationId) {
         compilationAdminService.delete(compilationId);
     }
 
-    @DeleteMapping("{compId}/pin")
+    @DeleteMapping("{compilationId}/pin")
     public void deletePin(@PathVariable @Positive long compilationId) {
         compilationAdminService.deletePin(compilationId);
     }
 
-    @PatchMapping("{compId}/pin")
+    @PatchMapping("{compilationId}/pin")
     public void pinned(@PathVariable @Positive long compilationId) {
         compilationAdminService.pinned(compilationId);
     }
 
-    @DeleteMapping("{compId}/events/{eventId}")
+    @DeleteMapping("{compilationId}/events/{eventId}")
     public void deleteEvent(@PathVariable @Positive long compilationId, @PathVariable @Positive long eventId) {
         compilationAdminService.deleteEvent(compilationId, eventId);
     }
 
-    @PatchMapping("{compId}/events/{eventId}")
+    @PatchMapping("{compilationId}/events/{eventId}")
     public void addEvent(@PathVariable @Positive long compilationId, @PathVariable @Positive long eventId) {
         compilationAdminService.addEvent(compilationId, eventId);
     }

@@ -6,7 +6,7 @@ import ru.practikum.ewm.general.model.dto.NewCategoryDto;
 public interface CategoryAdminService {
     CategoryDto createCategory(NewCategoryDto dto);
 
-    CategoryDto updateCategory(CategoryDto dto);
+    CategoryDto updateCategory(CategoryDto dto, long categoryId);
 
     void deleteCategory(long id);
 }
