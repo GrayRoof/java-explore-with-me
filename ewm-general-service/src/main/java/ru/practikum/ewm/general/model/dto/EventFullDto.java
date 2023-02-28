@@ -14,7 +14,7 @@ public class EventFullDto {
     UserShortDto initiator;
     boolean paid;
     String title;
-    LacationDto location;
+    LocationDto location;
     long views;
     int participantLimit;
     boolean requestModeration;

@@ -3,7 +3,7 @@ package ru.practikum.ewm.general.model.dto;
 import lombok.Data;
 
 @Data
-public class LacationDto {
+public class LocationDto {
     float lon;
     float lat;
 }

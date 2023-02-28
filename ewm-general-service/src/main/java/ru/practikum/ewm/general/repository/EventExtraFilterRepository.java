@@ -8,6 +8,8 @@ import ru.practikum.ewm.general.model.EventState;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,11 +43,13 @@ public class EventExtraFilterRepository {
         if (filter.getPaid() != null) {
             predicates.add(criteriaBuilder.equal(event.get("paid"), filter.getPaid()));
         }
-        if (filter.getRangeStart() != null) {
-            predicates.add(criteriaBuilder.greaterThan(event.get("eventDate"), filter.getRangeStart()));
+        LocalDateTime start = parseDateOrNull(filter.getRangeStart());
+        if (start != null) {
+            predicates.add(criteriaBuilder.greaterThan(event.get("eventDate"), start));
         }
-        if (filter.getRangeEnd() != null) {
-            predicates.add(criteriaBuilder.lessThan(event.get("eventDate"), filter.getRangeEnd()));
+        LocalDateTime end = parseDateOrNull(filter.getRangeEnd());
+        if (end != null) {
+            predicates.add(criteriaBuilder.lessThan(event.get("eventDate"), end));
         }
         List<Long> users = filter.getUsers();
         if (users != null && !users.isEmpty()) {
@@ -78,5 +82,13 @@ public class EventExtraFilterRepository {
                 .setFirstResult(filter.getFrom())
                 .setMaxResults(filter.getSize())
                 .getResultList();
+    }
+
+    private LocalDateTime parseDateOrNull(String textDate) {
+        LocalDateTime date = null;
+        if (textDate != null) {
+            date = LocalDateTime.parse(textDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+        return date;
     }
 }

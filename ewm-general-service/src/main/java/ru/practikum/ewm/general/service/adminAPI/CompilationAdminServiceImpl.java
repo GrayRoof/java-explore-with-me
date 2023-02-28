@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// TODO almost
+// TODO write text exceptions
 @Service
 @Slf4j
 @RequiredArgsConstructor

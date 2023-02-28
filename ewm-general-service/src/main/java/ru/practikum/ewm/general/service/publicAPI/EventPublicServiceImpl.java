@@ -33,25 +33,13 @@ public class EventPublicServiceImpl implements EventPublicService {
     public List<EventFullDto> getAll(String text, List<Long> categories, Boolean paid, String rangeStart,
                                      String rangeEnd, Boolean onlyAvailable, SortMethod sortMethod, Integer from,
                                      Integer size) {
-        LocalDateTime start;
-        try {
-            start = LocalDateTime.parse(rangeStart, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        } catch (NullPointerException e) {
-            start = null;
-        }
-        LocalDateTime end;
-        try {
-            end = LocalDateTime.parse(rangeEnd, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        } catch (NullPointerException e) {
-            end = null;
-        }
 
         EventSearchFilter filter = EventSearchFilter.builder()
                 .text(text)
                 .categories(categories)
+                .rangeStart(rangeStart)
+                .rangeEnd(rangeEnd)
                 .paid(paid)
-                .rangeStart(start)
-                .rangeEnd(end)
                 .onlyAvailable(onlyAvailable)
                 .sortMethod(sortMethod == null ? SortMethod.UNSUPPORTED_METHOD : sortMethod)
                 .from(from)

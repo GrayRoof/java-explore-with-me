@@ -14,10 +14,10 @@ public class EventSearchFilter {
     List<Long> users;
     List<EventState> states;
     Boolean paid;
-    LocalDateTime rangeStart;
-    LocalDateTime rangeEnd;
+    String rangeStart;
+    String rangeEnd;
     boolean onlyAvailable;
     SortMethod sortMethod;
-    Integer from;
-    Integer size;
+    int from;
+    int size;
 }
