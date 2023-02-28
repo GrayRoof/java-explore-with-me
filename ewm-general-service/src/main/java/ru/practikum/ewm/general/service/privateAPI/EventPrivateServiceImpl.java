@@ -40,14 +40,14 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         if (!event.getInitiator().equals(user)) {
             throw new NotFoundException("Текущий пользователь не является Инициатором данного события!");
         }
-        return EventMapper.toFullDto(event, 0L);
+        return EventMapper.toFullDto(event);
     }
 
     @Override
     public Collection<EventShortDto> getAllForOwner(long userId, Integer from, Integer size) {
         return eventRepository.findAllByInitiatorId(userId, OffsetPageable.of(from, size, Sort.unsorted()))
                 .stream()
-                .map(e -> EventMapper.toShortDto(e, 0L, 0L))
+                .map(EventMapper::toShortDto)
                 .collect(Collectors.toList());
     }
 
@@ -66,7 +66,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             throw new NotValidException("Событие нельзя создать менеее чем за 2 часа до его даты проведения!");
         }
 
-        return EventMapper.toFullDto(eventRepository.save(newEvent), 0L);
+        return EventMapper.toFullDto(eventRepository.save(newEvent));
     }
 
     @Override
@@ -111,7 +111,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             event.setTitle(dto.getTitle());
         }
         event.setState(EventState.PENDING);
-        EventFullDto fullDto = EventMapper.toFullDto(eventRepository.save(event), 0L);
+        EventFullDto fullDto = EventMapper.toFullDto(eventRepository.save(event));
         log.info("Событие с id = {} изменено согласно данным {}", dto.getEventId(), dto);
         return fullDto;
     }
@@ -127,7 +127,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             event.setState(EventState.CANCELED);
             eventRepository.save(event);
             log.info("Событие с id = {} было отменено", eventId);
-            return EventMapper.toFullDto(event, 0L);
+            return EventMapper.toFullDto(event);
         } else {
             throw new NotValidException("not PENDING");
         }

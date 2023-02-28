@@ -45,7 +45,7 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
     private List<EventShortDto> getShortDtoList(Compilation compilation) {
         return compilation.getEvents()
                 .stream()
-                .map(event -> EventMapper.toShortDto(event, 0L, 0L))
+                .map(EventMapper::toShortDto)
                 .collect(Collectors.toList());
     }
 }

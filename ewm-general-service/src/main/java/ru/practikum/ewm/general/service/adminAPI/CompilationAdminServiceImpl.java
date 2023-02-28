@@ -31,7 +31,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
         return CompilationMapper.toDto(compilationRepository.save(newCompilation),
                 events.stream()
-                        .map(event -> EventMapper.toShortDto(event, 0L, 0L))
+                        .map(EventMapper::toShortDto)
                         .collect(Collectors.toList()));
     }
 

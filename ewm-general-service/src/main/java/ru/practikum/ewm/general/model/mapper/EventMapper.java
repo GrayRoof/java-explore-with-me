@@ -34,7 +34,7 @@ public class EventMapper {
         return event;
     }
 
-    public static EventFullDto toFullDto(Event event, Long confirmedRequests) {
+    public static EventFullDto toFullDto(Event event) {
 
         EventFullDto eventFullDto = new EventFullDto();
         eventFullDto.setAnnotation(event.getAnnotation());
@@ -52,12 +52,12 @@ public class EventMapper {
         eventFullDto.setId(event.getId());
         eventFullDto.setInitiator(UserMapper.toShortDto(event.getInitiator()));
         eventFullDto.setState(event.getState());
-        eventFullDto.setConfirmedRequests(confirmedRequests);
+        eventFullDto.setConfirmedRequests(event.getConfirmedRequests());
 
         return eventFullDto;
     }
 
-    public static EventShortDto toShortDto(Event event, Long confirmedRequests, Long views) {
+    public static EventShortDto toShortDto(Event event) {
 
         EventShortDto eventShortDto = new EventShortDto();
         eventShortDto.setAnnotation(event.getAnnotation());
@@ -65,10 +65,10 @@ public class EventMapper {
         eventShortDto.setEventDate(event.getEventDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         eventShortDto.setTitle(event.getTitle());
         eventShortDto.setPaid(event.isPaid());
-        eventShortDto.setViews(views);
+        eventShortDto.setViews(event.getViews());
         eventShortDto.setId(event.getId());
         eventShortDto.setInitiator(UserMapper.toShortDto(event.getInitiator()));
-        eventShortDto.setConfirmedRequests(confirmedRequests);
+        eventShortDto.setConfirmedRequests(event.getConfirmedRequests());
         return eventShortDto;
     }
 }

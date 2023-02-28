@@ -32,8 +32,6 @@ public class Event {
     EventLocation location;
     boolean paid;
     String title;
-    @Transient
-    long views;
     @Column(name = "participantlimit")
     int participantLimit;
     @Column(name = "requestmoderation")
@@ -42,5 +40,7 @@ public class Event {
     LocalDateTime publishedOn;
     @Enumerated(EnumType.STRING)
     EventState state;
-
+    long views;
+    @Column(name = "confirmedrequests")
+    long confirmedRequests;
 }
