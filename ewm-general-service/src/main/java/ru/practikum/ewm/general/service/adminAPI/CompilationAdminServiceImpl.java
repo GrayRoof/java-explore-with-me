@@ -8,6 +8,7 @@ import ru.practikum.ewm.general.model.Compilation;
 import ru.practikum.ewm.general.model.Event;
 import ru.practikum.ewm.general.model.dto.CompilationDto;
 import ru.practikum.ewm.general.model.dto.NewCompilationDto;
+import ru.practikum.ewm.general.model.dto.UpdateCompilationDto;
 import ru.practikum.ewm.general.model.mapper.CompilationMapper;
 import ru.practikum.ewm.general.model.mapper.EventMapper;
 import ru.practikum.ewm.general.repository.CompilationRepository;
@@ -81,5 +82,21 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         events.remove(event);
         compilation.setEvents(events);
         compilationRepository.save(compilation);
+    }
+
+    @Override
+    public CompilationDto update(long compilationId, UpdateCompilationDto dto) {
+        Compilation compilation = compilationRepository.get(compilationId);
+
+        Set<Event> events = compilation.getEvents();
+
+        if (events.stream().anyMatch(event -> dto.getEvents().contains(event.getId()))) {
+            throw new NotAvailableException("already exist");
+        }
+        events.addAll(eventPublicService.findAllByIdIn(dto.getEvents()));
+        compilation.setEvents(events);
+
+        return CompilationMapper.toDto(compilationRepository.save(compilation),
+                events.stream().map(EventMapper::toShortDto).collect(Collectors.toList()));
     }
 }
