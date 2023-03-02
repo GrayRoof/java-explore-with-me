@@ -36,12 +36,13 @@ public class EventPublicController {
             throw new NotValidException("UNSUPPORTED_METHOD");
         }
 
-        return eventPublicService.getAll(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sortMethod, from, size);
+        return eventPublicService.getAll(text, categories, paid,
+                rangeStart, rangeEnd, onlyAvailable, sortMethod, from, size, request);
     }
 
     @GetMapping("{eventId}")
     public EventFullDto findById(@Positive @PathVariable long eventId, HttpServletRequest request) {
 
-        return eventPublicService.get(eventId);
+        return eventPublicService.get(eventId, request);
     }
 }

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import ru.practicum.statistic.dto.HitDto;
 import ru.practicum.statistic.dto.StatisticViewDto;
 
@@ -22,6 +23,7 @@ import java.util.List;
 
 
 @Slf4j
+@Service
 public class StatisticHttpClient {
 
     private final HttpClient httpClient;
@@ -29,7 +31,7 @@ public class StatisticHttpClient {
     private final String statsServiceUri;
     private final ObjectMapper mapper;
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     public StatisticHttpClient(@Value("${ewm-statistic-service.uri}") String statsServiceUri,
@@ -49,7 +51,7 @@ public class StatisticHttpClient {
         hitDto.setApp(app);
         hitDto.setUri(request.getRequestURI());
         hitDto.setIp(request.getRemoteAddr());
-        hitDto.setTimestamp(LocalDateTime.now().format(dateTimeFormatter));
+        hitDto.setTimestamp(LocalDateTime.now().format(FORMATTER));
 
         try {
             HttpRequest.BodyPublisher bodyPublisher = HttpRequest

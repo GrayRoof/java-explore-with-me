@@ -2,7 +2,10 @@ package ru.practikum.ewm.general.service.publicAPI;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
+import ru.practicum.statistic.client.StatisticHttpClient;
 import ru.practikum.ewm.general.exception.NotFoundException;
 import ru.practikum.ewm.general.model.Event;
 import ru.practikum.ewm.general.model.EventSearchFilter;
@@ -12,8 +15,7 @@ import ru.practikum.ewm.general.model.dto.EventFullDto;
 import ru.practikum.ewm.general.repository.EventExtraFilterRepository;
 import ru.practikum.ewm.general.repository.EventRepository;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,12 +29,14 @@ import java.util.stream.Collectors;
 public class EventPublicServiceImpl implements EventPublicService {
 
     private final EventRepository eventRepository;
+
+    private final StatisticHttpClient hitClient;
     private final EventExtraFilterRepository filterRepository;
 
     @Override
     public List<EventFullDto> getAll(String text, List<Long> categories, Boolean paid, String rangeStart,
                                      String rangeEnd, Boolean onlyAvailable, SortMethod sortMethod, Integer from,
-                                     Integer size) {
+                                     Integer size, HttpServletRequest request) {
 
         EventSearchFilter filter = EventSearchFilter.builder()
                 .text(text)
@@ -58,7 +62,8 @@ public class EventPublicServiceImpl implements EventPublicService {
     }
 
     @Override
-    public EventFullDto get(long eventId) {
+    public EventFullDto get(long eventId, HttpServletRequest request) {
+        hitClient.addHit(request);
         return EventMapper.toFullDto(getEntity(eventId));
     }
 
