@@ -34,6 +34,13 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
     }
 
     @Override
+    public Collection<RequestDto> findAllByEvent(long id) {
+        return requestRepository.findAllByEventId(id).stream()
+                .map(RequestMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public RequestDto create(long userId, long eventId) {
         User requester = userAdminService.getEntity(userId);
         Event event = eventPublicService.getEntity(eventId);
@@ -94,13 +101,13 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
             throw new NotAvailableException("not published");
         }
 
-        if (requestRepository.findAllByIdAndRequesterId(
-                event.getId(), requester.getId()).stream()
-                .anyMatch(request -> request.getStatus().equals(RequestStatus.PENDING)
-                || request.getStatus().equals(RequestStatus.CONFIRMED))) {
+        Collection<ParticipationRequest> requests = requestRepository.findAllByEventIdAndRequesterIdAndStatusIn(
+                event.getId(), requester.getId(), List.of(RequestStatus.PENDING, RequestStatus.CONFIRMED));
+        if (!requests.isEmpty()) {
             throw new NotAvailableException("already exist");
         }
-        if (!eventPublicService.isEventAvailable(event.getId())) {
+        long eventCapacity = event.getParticipantLimit() - getCountConfirmedForEvent(event.getId());
+        if (event.getParticipantLimit() > 0 &&  eventCapacity < 1) {
             throw new NotAvailableException("not available");
         }
     }

@@ -32,4 +32,10 @@ public class UserController {
         return userAdminService.getAll(ids, from, size);
     }
 
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long userId) {
+        userAdminService.delete(userId);
+    }
+
 }

@@ -1,6 +1,7 @@
 package ru.practikum.ewm.general.model;
 
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ public class Event {
     User initiator;
     @ManyToOne
     @JoinColumn(name = "locationid")
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     EventLocation location;
     boolean paid;
     String title;

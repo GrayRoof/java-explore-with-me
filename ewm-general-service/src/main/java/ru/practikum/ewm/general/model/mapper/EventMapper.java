@@ -1,11 +1,9 @@
 package ru.practikum.ewm.general.model.mapper;
 
-import ru.practikum.ewm.general.model.Category;
-import ru.practikum.ewm.general.model.Event;
-import ru.practikum.ewm.general.model.EventState;
-import ru.practikum.ewm.general.model.User;
+import ru.practikum.ewm.general.model.*;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
 import ru.practikum.ewm.general.model.dto.EventShortDto;
+import ru.practikum.ewm.general.model.dto.LocationDto;
 import ru.practikum.ewm.general.model.dto.NewEventDto;
 
 import java.time.LocalDateTime;
@@ -13,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 public class EventMapper {
 
-    public static Event toEvent(NewEventDto newEventDto, User initiator, Category category) {
+    public static Event toEvent(NewEventDto newEventDto, User initiator, Category category, EventLocation location) {
 
         Event event = new Event();
         event.setAnnotation(newEventDto.getAnnotation());
@@ -30,6 +28,7 @@ public class EventMapper {
         event.setRequestModeration(newEventDto.isRequestModeration());
         event.setViews(0L);
         event.setState(EventState.PENDING);
+        event.setLocation(location);
 
         return event;
     }
@@ -53,6 +52,8 @@ public class EventMapper {
         eventFullDto.setInitiator(UserMapper.toShortDto(event.getInitiator()));
         eventFullDto.setState(event.getState());
         eventFullDto.setConfirmedRequests(event.getConfirmedRequests());
+        eventFullDto.setLocation(event.getLocation() != null ?
+                new LocationDto(event.getLocation().getLon(), event.getLocation().getLat()) : null);
 
         return eventFullDto;
     }

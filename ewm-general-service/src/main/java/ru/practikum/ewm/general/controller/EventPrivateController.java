@@ -1,6 +1,8 @@
 package ru.practikum.ewm.general.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.model.dto.*;
 import ru.practikum.ewm.general.service.privateAPI.EventPrivateService;
@@ -13,11 +15,13 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/users/{userId}/events")
 @RequiredArgsConstructor
+@Slf4j
 public class EventPrivateController {
 
     private final EventPrivateService eventPrivateService;
 
     @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto createEvent(@Positive @PathVariable long userId, @Valid @RequestBody NewEventDto dto) {
         return eventPrivateService.createEvent(userId, dto);
     }

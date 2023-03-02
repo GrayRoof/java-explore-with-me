@@ -6,7 +6,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practikum.ewm.general.exception.NotAvailableException;
 import ru.practikum.ewm.general.exception.NotFoundException;
-import ru.practikum.ewm.general.exception.NotValidException;
 import ru.practikum.ewm.general.model.*;
 import ru.practikum.ewm.general.model.dto.*;
 import ru.practikum.ewm.general.model.mapper.CategoryMapper;
@@ -56,7 +55,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public Collection<RequestDto> getAllRequestsForEvent(long userId, long eventId) {
-        return null;
+        Event event = eventRepository.get(eventId);
+        User user = userAdminService.getEntity(userId);
+        return requestPrivateService.findAllByEvent(event.getId());
     }
 
     @Override
@@ -64,9 +65,14 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     public EventFullDto createEvent(long userId, NewEventDto dto) {
         User initiator = UserMapper.toUser(userAdminService.get(userId));
         Category category = CategoryMapper.toCategory(categoryService.get(dto.getCategory()));
-        Event newEvent = EventMapper.toEvent(dto, initiator, category);
+        EventLocation location = new EventLocation();
+        if (dto.getLocation() != null) {
+            location.setLat(dto.getLocation().getLat());
+            location.setLon(dto.getLocation().getLon());
+        }
+        Event newEvent = EventMapper.toEvent(dto, initiator, category, location);
         if (newEvent.getCreatedOn().plusHours(2).isAfter(newEvent.getEventDate())) {
-            throw new NotValidException("Событие нельзя создать менеее чем за 2 часа до его даты проведения!");
+            throw new NotAvailableException("Событие нельзя создать менеее чем за 2 часа до его даты проведения!");
         }
 
         return EventMapper.toFullDto(eventRepository.save(newEvent));
@@ -81,7 +87,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             throw new NotFoundException("Not owner");
         }
         if (event.getState().equals(EventState.PUBLISHED)) {
-            throw new NotValidException("PUBLISHED");
+            throw new NotAvailableException("PUBLISHED");
         }
         if (dto.getAnnotation() != null) {
             event.setAnnotation(dto.getAnnotation());
@@ -96,12 +102,12 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             LocalDateTime startEvent = LocalDateTime.parse(dto.getEventDate(), DateTimeFormatter
                     .ofPattern("yyyy-MM-dd HH:mm:ss"));
             if (LocalDateTime.now().plusHours(2).isAfter(startEvent)) {
-                throw new NotValidException("createTimeLag");
+                throw new NotAvailableException("createTimeLag");
             }
             event.setEventDate(startEvent);
         } else {
             if (LocalDateTime.now().plusHours(2).isAfter(event.getEventDate())) {
-                throw new NotValidException("createTimeLag");
+                throw new NotAvailableException("createTimeLag");
             }
         }
         if (dto.getPaid() != null) {
@@ -132,7 +138,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             log.info("Событие с id = {} было отменено", eventId);
             return EventMapper.toFullDto(event);
         } else {
-            throw new NotValidException("not PENDING");
+            throw new NotAvailableException("not PENDING");
         }
     }
 

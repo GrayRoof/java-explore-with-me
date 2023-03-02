@@ -1,6 +1,7 @@
 package ru.practikum.ewm.general.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.model.dto.CompilationDto;
 import ru.practikum.ewm.general.model.dto.NewCompilationDto;
@@ -17,11 +18,13 @@ public class CompilationAdminController {
     private final CompilationAdminService compilationAdminService;
 
     @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto create(@Valid @RequestBody NewCompilationDto dto) {
         return compilationAdminService.create(dto);
     }
 
     @DeleteMapping("{compilationId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable @Positive long compilationId) {
         compilationAdminService.delete(compilationId);
     }

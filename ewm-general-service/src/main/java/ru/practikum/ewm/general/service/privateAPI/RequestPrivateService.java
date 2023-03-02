@@ -9,6 +9,8 @@ public interface RequestPrivateService {
 
     Collection<RequestDto> findAllByRequesterId(long userId);
 
+    Collection<RequestDto> findAllByEvent(long id);
+
     RequestDto create(long userId, long eventId);
 
     RequestDto cancel(long userId, long requestId);

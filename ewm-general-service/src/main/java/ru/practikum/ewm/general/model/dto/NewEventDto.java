@@ -14,6 +14,7 @@ public class NewEventDto {
     String description;
     String eventDate;
     boolean paid;
+    LocationDto location;
     int participantLimit;
     boolean requestModeration;
     String title;

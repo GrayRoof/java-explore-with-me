@@ -50,7 +50,8 @@ public class EventAdminServiceImpl implements EventAdminService {
             LocalDateTime eventDate = LocalDateTime.parse(dto.getEventDate(), FORMATTER);
             LocalDateTime publishedOn = event.getPublishedOn();
 
-            if (eventDate.isBefore(publishedOn.plusHours(2)) || eventDate.isBefore(LocalDateTime.now())) {
+            if (publishedOn != null && eventDate.isBefore(publishedOn.plusHours(2))
+                    || eventDate.isBefore(LocalDateTime.now())) {
                 throw new NotAvailableException("eventDate. Value: " + eventDate);
             }
             event.setEventDate(eventDate);
