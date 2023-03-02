@@ -65,6 +65,10 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
         if (!request.getRequester().equals(requester)) {
             throw new NotAvailableException("not requester");
         }
+
+        if (request.getStatus().equals(RequestStatus.CONFIRMED)) {
+            throw new NotAvailableException("already CONFIRMED");
+        }
         request.setStatus(RequestStatus.CANCELED);
         return RequestMapper.toDto(requestRepository.save(request));
     }
@@ -76,8 +80,11 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
 
     @Override
     public Collection<RequestDto> rejectRequests(List<Long> ids) {
-        return requestRepository.findAllByIdIn(ids)
-                .stream().peek(request -> request.setStatus(RequestStatus.REJECTED))
+        Collection<ParticipationRequest> requests = requestRepository.findAllByIdIn(ids);
+        if (requests.stream().anyMatch(request -> request.getStatus().equals(RequestStatus.CONFIRMED))) {
+            throw new NotAvailableException("already CONFIRMED");
+        }
+        return requests.stream().peek(request -> request.setStatus(RequestStatus.REJECTED))
                 .map(requestRepository::save)
                 .map(RequestMapper::toDto)
                 .collect(Collectors.toList());

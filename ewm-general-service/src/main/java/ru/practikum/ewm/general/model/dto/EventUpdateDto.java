@@ -2,6 +2,7 @@ package ru.practikum.ewm.general.model.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practikum.ewm.general.model.EventStateAction;
 
 @Data
 @NoArgsConstructor
@@ -15,4 +16,5 @@ public class EventUpdateDto {
     Integer participantLimit;
     Boolean requestModeration;
     String title;
+    EventStateAction stateAction;
 }

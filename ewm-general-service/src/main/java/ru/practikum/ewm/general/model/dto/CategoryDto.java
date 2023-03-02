@@ -7,8 +7,8 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class CategoryDto {
-    private long id;
+    long id;
     @NotNull
     @NotBlank
-    private String name;
+    String name;
 }

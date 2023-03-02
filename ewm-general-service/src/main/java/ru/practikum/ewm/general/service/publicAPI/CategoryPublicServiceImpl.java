@@ -21,7 +21,7 @@ public class CategoryPublicServiceImpl implements CategoryPublicService {
     @Override
     public Collection<CategoryDto> getAll(Integer from, Integer size) {
 
-        return categoryRepository.findAll(OffsetPageable.of(from, size, Sort.unsorted()))
+        return categoryRepository.findAll(OffsetPageable.of(from, size, Sort.by(Sort.Direction.ASC, "id")))
                 .stream()
                 .map(CategoryMapper::toDto)
                 .collect(Collectors.toList());

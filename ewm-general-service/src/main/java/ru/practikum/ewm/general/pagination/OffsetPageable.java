@@ -50,13 +50,13 @@ public class OffsetPageable implements Pageable {
     @Override
     public Pageable next() {
 
-        return of(getPageSize(), (int) (getOffset() + getPageSize()), getSort());
+        return of((int) (getOffset() + getPageSize()), getPageSize(), getSort());
     }
 
     @Override
     public Pageable previousOrFirst() {
         return hasPrevious()
-                ? of(getPageSize(), (int) (getOffset() - getPageSize()), getSort())
+                ? of((int) (getOffset() - getPageSize()), getPageSize(), getSort())
                 : first();
     }
 
