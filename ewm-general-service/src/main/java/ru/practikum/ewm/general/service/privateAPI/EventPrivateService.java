@@ -18,9 +18,5 @@ public interface EventPrivateService {
 
     EventFullDto cancelEvent(long eventId, long userId);
 
-    RequestDto confirmRequest(long userId, long eventId, long reqId);
-
-    RequestDto rejectRequest(long userId, long eventId, long reqId);
-
-    StatusResponseDto setStatus(long userId, long eventId, StatusRequestDto statusRequestDto);
+    StatusResponseDto setStatusToRequests(long userId, long eventId, StatusRequestDto statusRequestDto);
 }

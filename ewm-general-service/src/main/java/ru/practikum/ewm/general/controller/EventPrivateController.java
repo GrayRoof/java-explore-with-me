@@ -59,24 +59,10 @@ public class EventPrivateController {
         return eventPrivateService.getAllRequestsForEvent(userId, eventId);
     }
 
-    @PatchMapping("{eventId}/requests/{reqId}/confirm")
-    public RequestDto confirmRequest(@Positive @PathVariable long userId,
-                                                  @Positive @PathVariable long eventId,
-                                                  @Positive @PathVariable long reqId) {
-        return eventPrivateService.confirmRequest(userId, eventId, reqId);
-    }
-
-    @PatchMapping("{eventId}/requests/{reqId}/reject")
-    public RequestDto rejectRequest(@Positive @PathVariable long userId,
-                                                 @Positive @PathVariable long eventId,
-                                                 @Positive @PathVariable long reqId) {
-        return eventPrivateService.rejectRequest(userId, eventId, reqId);
-    }
-
     @PatchMapping("{eventId}/requests")
     public StatusResponseDto setStatus(@PathVariable long userId,
                                        @PathVariable long eventId,
                                        @RequestBody StatusRequestDto statusRequestDto) {
-        return eventPrivateService.setStatus(userId, eventId, statusRequestDto);
+        return eventPrivateService.setStatusToRequests(userId, eventId, statusRequestDto);
     }
 }

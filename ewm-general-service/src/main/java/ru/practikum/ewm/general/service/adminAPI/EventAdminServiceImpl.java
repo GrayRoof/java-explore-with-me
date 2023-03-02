@@ -35,7 +35,9 @@ public class EventAdminServiceImpl implements EventAdminService {
     @Override
     public EventFullDto update(long eventId, EventAdminUpdateDto dto) {
         Event event = eventRepository.get(eventId);
-        event = setState(event, dto.getStateAction());
+
+        EventState state = getStateForEvent(event, dto.getStateAction());
+        event.setState(state);
 
         if (dto.getAnnotation() != null) {
             event.setAnnotation(dto.getAnnotation());
@@ -102,23 +104,26 @@ public class EventAdminServiceImpl implements EventAdminService {
         return eventRepository.findAllByCategoryId(id);
     }
 
-    private Event setState(Event event, EventStateAction action) {
+    private EventState getStateForEvent(Event event, EventStateAction action) {
+        EventState result = EventState.CANCELED;
         if (action != null) {
             switch (action) {
                 case PUBLISH_EVENT:
                     if (!event.getState().equals(EventState.PENDING)) {
                         throw new NotAvailableException("not PENDING");
                     }
-                    event.setState(EventState.PUBLISHED);
+                    if (!event.getEventDate().minusHours(2).isAfter(LocalDateTime.now())) {
+                            throw new NotAvailableException("time out");
+                    }
+                    result = EventState.PUBLISHED;
                     break;
                 case REJECT_EVENT:
                     if (event.getState().equals(EventState.PUBLISHED)) {
-                        throw new NotAvailableException("PUBLISHED");
+                        throw new NotAvailableException("is PUBLISHED");
                     }
-                    event.setState(EventState.CLOSED);
                     break;
             }
         }
-        return event;
+        return result;
     }
 }

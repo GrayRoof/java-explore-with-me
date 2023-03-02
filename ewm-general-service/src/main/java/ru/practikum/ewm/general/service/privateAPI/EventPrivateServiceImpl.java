@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/* TODO set extra data to event: confirmedRequests and views */
+/* TODO set extra data to event: views */
 
 @Service
 @Slf4j
@@ -75,28 +75,30 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             throw new NotAvailableException("Событие нельзя создать менеее чем за 2 часа до его даты проведения!");
         }
 
-        return EventMapper.toFullDto(eventRepository.save(newEvent));
+        EventFullDto saved = EventMapper.toFullDto(eventRepository.save(newEvent));
+                log.info("EVENT: Событие с id = {} создано согласно данным {}", saved.getId(), dto);
+        return saved;
     }
 
     @Override
     public EventFullDto update(long userId, long eventId, EventUpdateDto dto) {
 
-        User initiator = UserMapper.toUser(userAdminService.get(userId));
+        User initiator = userAdminService.getEntity(userId);
         Event event = eventRepository.get(eventId);
-        if (event.getInitiator().getId() != initiator.getId()) {
+        if (!event.getInitiator().equals(initiator)) {
             throw new NotFoundException("Not owner");
         }
         if (event.getState().equals(EventState.PUBLISHED)) {
-            throw new NotAvailableException("PUBLISHED");
-        }
-        if (dto.getAnnotation() != null) {
-            event.setAnnotation(dto.getAnnotation());
-        }
-        if (dto.getCategory() != null) {
-            event.setCategory(CategoryMapper.toCategory(categoryService.get(dto.getCategory())));
+            throw new NotAvailableException("already PUBLISHED");
         }
         if (dto.getDescription() != null) {
             event.setDescription(dto.getDescription());
+        }
+        if (dto.getCategory() != null) {
+            event.setCategory(categoryService.getEntity(dto.getCategory()));
+        }
+        if (dto.getAnnotation() != null) {
+            event.setAnnotation(dto.getAnnotation());
         }
         if (dto.getEventDate() != null) {
             LocalDateTime startEvent = LocalDateTime.parse(dto.getEventDate(), DateTimeFormatter
@@ -119,9 +121,23 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         if (dto.getTitle() != null) {
             event.setTitle(dto.getTitle());
         }
-        event.setState(EventState.PENDING);
+        if (dto.getStateAction() != null) {
+            switch (dto.getStateAction()) {
+                case CANCEL_REVIEW:
+                    if (event.getState().equals(EventState.PENDING)) {
+                        event.setState(EventState.CANCELED);
+                    }
+                    break;
+                case SEND_TO_REVIEW:
+                    if (event.getState().equals(EventState.CANCELED)) {
+                        event.setState(EventState.PENDING);
+                    }
+                    break;
+            }
+        }
+
         EventFullDto fullDto = EventMapper.toFullDto(eventRepository.save(event));
-        log.info("Событие с id = {} изменено согласно данным {}", dto.getEventId(), dto);
+        log.info("EVENT: Событие с id = {} изменено согласно данным {}", eventId, dto);
         return fullDto;
     }
 
@@ -143,17 +159,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     }
 
     @Override
-    public RequestDto confirmRequest(long userId, long eventId, long reqId) {
-        return null;
-    }
-
-    @Override
-    public RequestDto rejectRequest(long userId, long eventId, long reqId) {
-        return null;
-    }
-
-    @Override
-    public StatusResponseDto setStatus(long userId, long eventId, StatusRequestDto statusRequestDto) {
+    public StatusResponseDto setStatusToRequests(long userId, long eventId, StatusRequestDto statusRequestDto) {
         User eventInitiator = userAdminService.getEntity(userId);
         Event event = eventRepository.get(eventId);
         boolean limited = event.getParticipantLimit() > 0;
@@ -167,7 +173,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                     result = rejectRequests(statusRequestDto.getRequestIds());
                     break;
                 case CONFIRMED:
-
                     result = confirmByLimitRequests(statusRequestDto.getRequestIds(), eventCapacity);
                     break;
             }
