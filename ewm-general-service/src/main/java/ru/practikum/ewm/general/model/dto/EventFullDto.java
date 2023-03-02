@@ -16,7 +16,7 @@ public class EventFullDto {
     String title;
     LocationDto location;
     long views;
-    int participantLimit;
+    long participantLimit;
     boolean requestModeration;
     String publishedOn;
     EventState state;

@@ -4,8 +4,8 @@ package ru.practikum.ewm.general.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.model.EventState;
+import ru.practikum.ewm.general.model.dto.EventAdminUpdateDto;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
-import ru.practikum.ewm.general.model.dto.EventUpdateDto;
 import ru.practikum.ewm.general.service.adminAPI.EventAdminService;
 
 import javax.validation.constraints.Positive;
@@ -20,21 +20,6 @@ public class EventAdminController {
 
     private final EventAdminService eventAdminService;
 
-    @PatchMapping("{eventId}/publish")
-    public EventFullDto publish(@Positive @PathVariable long eventId) {
-        return eventAdminService.publish(eventId);
-    }
-
-    @PatchMapping("{eventId}/reject")
-    public EventFullDto reject(@Positive @PathVariable long eventId) {
-        return eventAdminService.reject(eventId);
-    }
-
-    @PutMapping("/{eventId}")
-    public EventFullDto update(@Positive @PathVariable long eventId, @RequestBody EventUpdateDto dto) {
-        return eventAdminService.update(eventId, dto);
-    }
-
     @GetMapping
     public Collection<EventFullDto> findAll(@RequestParam(required = false) List<Long> users,
                                             @RequestParam(required = false) List<EventState> states,
@@ -45,6 +30,12 @@ public class EventAdminController {
                                             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
 
-        return eventAdminService.findAll(users, states, categories, rangeStart, rangeEnd, from, size);
+        return eventAdminService.getAll(users, states, categories, rangeStart, rangeEnd, from, size);
+    }
+
+    @PatchMapping("/{eventId}")
+    public EventFullDto update(@Positive @PathVariable Long eventId,
+                                    @RequestBody EventAdminUpdateDto eventAdminUpdateDto) {
+        return eventAdminService.update(eventId, eventAdminUpdateDto);
     }
 }

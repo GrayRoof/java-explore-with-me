@@ -3,7 +3,7 @@ package ru.practikum.ewm.general.service.privateAPI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practikum.ewm.general.exception.ForbiddenException;
+import ru.practikum.ewm.general.exception.NotAvailableException;
 import ru.practikum.ewm.general.model.*;
 import ru.practikum.ewm.general.model.dto.RequestDto;
 import ru.practikum.ewm.general.model.mapper.RequestMapper;
@@ -48,7 +48,7 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
         request.setCreated(LocalDateTime.now());
         request.setEvent(event);
         request.setStatus(status);
-        return RequestMapper.toDto(request);
+        return RequestMapper.toDto(requestRepository.save(request));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
         User requester = userAdminService.getEntity(userId);
         ParticipationRequest request = requestRepository.get(requestId);
         if (!request.getRequester().equals(requester)) {
-            throw new ForbiddenException("not requester");
+            throw new NotAvailableException("not requester");
         }
         request.setStatus(RequestStatus.CANCELED);
         return RequestMapper.toDto(requestRepository.save(request));
@@ -67,19 +67,41 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
         return requestRepository.findAllByEventIdAndStatus(eventId, RequestStatus.CONFIRMED).size();
     }
 
+    @Override
+    public Collection<RequestDto> rejectRequests(List<Long> ids) {
+        return requestRepository.findAllByIdIn(ids)
+                .stream().peek(request -> request.setStatus(RequestStatus.REJECTED))
+                .map(requestRepository::save)
+                .map(RequestMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<RequestDto> confirmRequests(List<Long> ids) {
+        return requestRepository.findAllByIdIn(ids)
+                .stream().peek(request -> request.setStatus(RequestStatus.CONFIRMED))
+                .map(requestRepository::save)
+                .map(RequestMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
     private void checkNewRequest(Event event, User requester) {
         if (event.getInitiator().equals(requester)) {
-            throw new ForbiddenException("initiator");
+            throw new NotAvailableException("initiator");
         }
         if (!event.getState().equals(EventState.PUBLISHED)) {
-            throw new ForbiddenException("not published");
+            throw new NotAvailableException("not published");
         }
-        if (requestRepository.existsByIdAndRequesterIdAndStatusIn(
-                event.getId(), requester.getId(), List.of(RequestStatus.CONFIRMED, RequestStatus.PENDING))) {
-            throw new ForbiddenException("already exist");
+
+        if (requestRepository.findAllByIdAndRequesterId(
+                event.getId(), requester.getId()).stream()
+                .anyMatch(request -> request.getStatus().equals(RequestStatus.PENDING)
+                || request.getStatus().equals(RequestStatus.CONFIRMED))) {
+            throw new NotAvailableException("already exist");
         }
         if (!eventPublicService.isEventAvailable(event.getId())) {
-            throw new ForbiddenException("not available");
+            throw new NotAvailableException("not available");
         }
     }
 }

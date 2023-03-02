@@ -33,14 +33,15 @@ public class Event {
     boolean paid;
     String title;
     @Column(name = "participantlimit")
-    int participantLimit;
+    long participantLimit;
     @Column(name = "requestmoderation")
     boolean requestModeration;
     @Column(name = "published")
     LocalDateTime publishedOn;
     @Enumerated(EnumType.STRING)
     EventState state;
+    @Transient
     long views;
-    @Column(name = "confirmedrequests")
+    @Transient
     long confirmedRequests;
 }

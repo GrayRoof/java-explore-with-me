@@ -69,4 +69,10 @@ public class EventPrivateController {
         return eventPrivateService.rejectRequest(userId, eventId, reqId);
     }
 
+    @PatchMapping("{eventId}/requests")
+    public StatusResponseDto setStatus(@PathVariable long userId,
+                                       @PathVariable long eventId,
+                                       @RequestBody StatusRequestDto statusRequestDto) {
+        return eventPrivateService.setStatus(userId, eventId, statusRequestDto);
+    }
 }

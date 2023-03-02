@@ -3,7 +3,7 @@ package ru.practikum.ewm.general.service.adminAPI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practikum.ewm.general.exception.ForbiddenException;
+import ru.practikum.ewm.general.exception.NotAvailableException;
 import ru.practikum.ewm.general.model.Compilation;
 import ru.practikum.ewm.general.model.Event;
 import ru.practikum.ewm.general.model.dto.CompilationDto;
@@ -49,7 +49,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         Compilation compilation = compilationRepository.get(compilationId);
         Set<Event> events = compilation.getEvents();
         if (events.contains(event)) {
-            throw new ForbiddenException("already exist");
+            throw new NotAvailableException("already exist");
         }
         events.add(event);
         compilation.setEvents(events);
@@ -76,7 +76,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         Compilation compilation = compilationRepository.get(compilationId);
         Set<Event> events = compilation.getEvents();
         if (!events.contains(event)) {
-            throw new ForbiddenException("not exist");
+            throw new NotAvailableException("not exist");
         }
         events.remove(event);
         compilation.setEvents(events);

@@ -52,7 +52,7 @@ public class ErrorHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = {NotValidException.class, NotAvailableException.class})
+    @ExceptionHandler(value = {NotValidException.class})
     public ErrorMessage handleNotValidException(Exception exception, WebRequest request) {
         ErrorMessage error = new ErrorMessage(
                 new Date(),
@@ -68,7 +68,7 @@ public class ErrorHandler {
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(value = {DataIntegrityViolationException.class})
+    @ExceptionHandler(value = {DataIntegrityViolationException.class, NotAvailableException.class})
     public ErrorMessage handleDuplicateException(Exception exception, WebRequest request) {
         ErrorMessage error = new ErrorMessage(
                 new Date(),

@@ -6,6 +6,7 @@ import ru.practikum.ewm.general.model.ParticipationRequest;
 import ru.practikum.ewm.general.model.RequestStatus;
 
 import java.util.Collection;
+import java.util.List;
 
 
 public interface RequestRepository extends JpaRepository<ParticipationRequest, Long> {
@@ -17,5 +18,7 @@ public interface RequestRepository extends JpaRepository<ParticipationRequest, L
 
     Collection<ParticipationRequest> findAllByEventIdAndStatus(long eventId, RequestStatus status);
 
-    boolean existsByIdAndRequesterIdAndStatusIn(long id, long userId, Collection<RequestStatus> statuses);
+    Collection<ParticipationRequest> findAllByIdAndRequesterId(long id, long requesterId);
+
+    Collection<ParticipationRequest> findAllByIdIn(List<Long> ids);
 }

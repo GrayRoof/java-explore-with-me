@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practikum.ewm.general.exception.NotAvailableException;
 import ru.practikum.ewm.general.exception.NotFoundException;
 import ru.practikum.ewm.general.exception.NotValidException;
 import ru.practikum.ewm.general.model.*;
@@ -20,6 +21,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /* TODO set extra data to event: confirmedRequests and views */
@@ -32,6 +34,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final EventRepository eventRepository;
     private final UserAdminService userAdminService;
     private final CategoryPublicService categoryService;
+    private final RequestPrivateService requestPrivateService;
 
     @Override
     public EventFullDto getForOwner(long eventId, long userId) {
@@ -141,5 +144,52 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public RequestDto rejectRequest(long userId, long eventId, long reqId) {
         return null;
+    }
+
+    @Override
+    public StatusResponseDto setStatus(long userId, long eventId, StatusRequestDto statusRequestDto) {
+        User eventInitiator = userAdminService.getEntity(userId);
+        Event event = eventRepository.get(eventId);
+        boolean limited = event.getParticipantLimit() > 0;
+        long confirmedCount = requestPrivateService.getCountConfirmedForEvent(eventId);
+        long eventCapacity = limited ? event.getParticipantLimit() - confirmedCount : Long.MAX_VALUE;
+        RequestStatus status = statusRequestDto.getStatus();
+        StatusResponseDto result = new StatusResponseDto();
+        if (status != null) {
+            switch (status) {
+                case REJECTED:
+                    result = rejectRequests(statusRequestDto.getRequestIds());
+                    break;
+                case CONFIRMED:
+
+                    result = confirmByLimitRequests(statusRequestDto.getRequestIds(), eventCapacity);
+                    break;
+            }
+        }
+
+        return result;
+    }
+
+    private StatusResponseDto rejectRequests(List<Long> requestIds) {
+        Collection<RequestDto> rejected = requestPrivateService.rejectRequests(requestIds);
+        StatusResponseDto responseDto = new StatusResponseDto();
+        responseDto.setRejectedRequests(rejected);
+        responseDto.setConfirmedRequests(List.of());
+        return responseDto;
+    }
+
+    private StatusResponseDto confirmByLimitRequests(List<Long> requestIds, long eventCapacity) {
+        if (eventCapacity > 0) {
+            Collection<RequestDto> confirmed = requestPrivateService
+                    .confirmRequests(requestIds.stream().limit(eventCapacity).collect(Collectors.toList()));
+            Collection<RequestDto> rejected = requestPrivateService
+                    .rejectRequests(requestIds.stream().skip(eventCapacity).collect(Collectors.toList()));
+            StatusResponseDto responseDto = new StatusResponseDto();
+            responseDto.setRejectedRequests(rejected);
+            responseDto.setConfirmedRequests(confirmed);
+            return responseDto;
+        } else {
+            throw new NotAvailableException("event capacity");
+        }
     }
 }
