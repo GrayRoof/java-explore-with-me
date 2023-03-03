@@ -18,9 +18,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO
-
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -69,10 +66,11 @@ public class EventPublicServiceImpl implements EventPublicService {
     @Override
     public Collection<Event> findAllByIdIn(Collection<Long> ids) {
         Collection<Event> events = eventRepository.findAllByIdIn(ids);
-        events.forEach(event -> {
-            if (!ids.contains(event.getId())) {
-                throw new NotFoundException("not exist");
-            }});
+        ids.forEach(id -> {
+            if (events.stream().noneMatch(event -> event.getId() == id)) {
+                throw new NotFoundException("Событие не найдено! id: " + id);
+            }
+        });
         return events;
     }
 }

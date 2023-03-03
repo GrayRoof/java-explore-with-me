@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -112,16 +111,16 @@ public class EventAdminServiceImpl implements EventAdminService {
             switch (action) {
                 case PUBLISH_EVENT:
                     if (!event.getState().equals(EventState.PENDING)) {
-                        throw new NotAvailableException("not PENDING");
+                        throw new NotAvailableException("Событие не находится в состоянии PENDING!");
                     }
                     if (!event.getEventDate().minusHours(2).isAfter(LocalDateTime.now())) {
-                            throw new NotAvailableException("time out");
+                            throw new NotAvailableException("Дата события не может быть раньше текущей даты!");
                     }
                     result = EventState.PUBLISHED;
                     break;
                 case REJECT_EVENT:
                     if (event.getState().equals(EventState.PUBLISHED)) {
-                        throw new NotAvailableException("is PUBLISHED");
+                        throw new NotAvailableException("Невозможно отменить опубликованное событие!");
                     }
                     break;
             }

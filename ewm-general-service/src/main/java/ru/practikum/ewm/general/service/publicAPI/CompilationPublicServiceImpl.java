@@ -17,8 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/* TODO add extra data to event: confirmedRequest and views */
-
 @Service
 @Slf4j
 @RequiredArgsConstructor

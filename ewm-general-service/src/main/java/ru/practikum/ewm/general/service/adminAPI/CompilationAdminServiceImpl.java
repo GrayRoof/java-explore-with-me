@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// TODO write text exceptions
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -50,7 +49,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         Compilation compilation = compilationRepository.get(compilationId);
         Set<Event> events = compilation.getEvents();
         if (events.contains(event)) {
-            throw new NotAvailableException("already exist");
+            throw new NotAvailableException("Событие уже добавлено в подборку!");
         }
         events.add(event);
         compilation.setEvents(events);
@@ -77,7 +76,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         Compilation compilation = compilationRepository.get(compilationId);
         Set<Event> events = compilation.getEvents();
         if (!events.contains(event)) {
-            throw new NotAvailableException("not exist");
+            throw new NotAvailableException("Такого события нет в подборке!");
         }
         events.remove(event);
         compilation.setEvents(events);
@@ -91,7 +90,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         Set<Event> events = compilation.getEvents();
 
         if (events.stream().anyMatch(event -> dto.getEvents().contains(event.getId()))) {
-            throw new NotAvailableException("already exist");
+            throw new NotAvailableException("Событие уже добавлено!");
         }
         events.addAll(eventPublicService.findAllByIdIn(dto.getEvents()));
         compilation.setEvents(events);
