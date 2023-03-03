@@ -15,7 +15,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping(path = "/admin/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserAdminController {
 
     private final UserAdminService userAdminService;
 
