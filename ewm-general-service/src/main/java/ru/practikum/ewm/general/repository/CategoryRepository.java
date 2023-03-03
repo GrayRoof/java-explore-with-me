@@ -13,6 +13,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
         return findById(id).orElseThrow(() -> new NotFoundException("Категория с идентификатором #" +
                 id + " не зарегистрирована!"));
     }
+
     Page<Category> findAll(Pageable pageable);
 
 }

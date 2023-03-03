@@ -25,6 +25,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     private final CompilationRepository compilationRepository;
     private final EventPublicService eventPublicService;
+
     @Override
     public CompilationDto create(NewCompilationDto dto) {
         Set<Event> events = new HashSet<>(eventPublicService.findAllByIdIn(dto.getEvents()));

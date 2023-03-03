@@ -14,6 +14,7 @@ public interface RequestRepository extends JpaRepository<ParticipationRequest, L
     default ParticipationRequest get(long requestId) {
         return findById(requestId).orElseThrow(() -> new NotFoundException("not exist"));
     }
+
     Collection<ParticipationRequest> findAllByRequesterId(long userId);
 
     Collection<ParticipationRequest> findAllByEventIdAndStatus(long eventId, RequestStatus status);

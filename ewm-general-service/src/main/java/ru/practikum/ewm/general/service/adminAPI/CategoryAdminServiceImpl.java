@@ -17,6 +17,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
 
     private final CategoryRepository categoryRepository;
     private final EventAdminService eventAdminService;
+
     @Override
     public CategoryDto createCategory(NewCategoryDto dto) {
         CategoryDto categoryDto = CategoryMapper.toDto(categoryRepository
@@ -38,7 +39,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     public void deleteCategory(long id) {
         Category category = categoryRepository.get(id);
 
-        if(eventAdminService.getAllByCategory(category.getId()).isEmpty()) {
+        if (eventAdminService.getAllByCategory(category.getId()).isEmpty()) {
             categoryRepository.delete(category);
             log.info("Категория с id {} была удалена", id);
         } else {

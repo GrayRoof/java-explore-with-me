@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 import ru.practikum.ewm.general.exception.NotFoundException;
 import ru.practikum.ewm.general.model.Compilation;
 
-import java.util.Collection;
-
 @Repository
 public interface CompilationRepository extends JpaRepository<Compilation, Long> {
 

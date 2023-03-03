@@ -16,7 +16,7 @@ import java.util.*;
 @Slf4j
 public class EventViewActualizer {
 
-    private final static int LIMIT_TO_UPDATE = 200;
+    private static final int LIMIT_TO_UPDATE = 200;
     private final StatisticHttpClient statisticHttpClient;
     private final EventRepository eventRepository;
 
