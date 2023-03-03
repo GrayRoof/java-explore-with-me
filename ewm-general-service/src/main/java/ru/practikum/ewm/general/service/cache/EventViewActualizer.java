@@ -16,7 +16,7 @@ import java.util.*;
 @Slf4j
 public class EventViewActualizer {
 
-    private final static int LIMIT_TO_UPDATE = 100;
+    private final static int LIMIT_TO_UPDATE = 200;
     private final StatisticHttpClient statisticHttpClient;
     private final EventRepository eventRepository;
 
@@ -27,7 +27,7 @@ public class EventViewActualizer {
     public void updateCachedViews() {
         List<Long> idsToUpdateByLimit = getIdsToUpdateByLimit();
         if (idsToUpdateByLimit.isEmpty()) {
-            log.info("nothing to update");
+            log.info("CACHE: nothing to update");
             return;
         }
 
@@ -46,7 +46,7 @@ public class EventViewActualizer {
     public void scheduleUpdating(long eventId) {
         synchronized (idsToUpdate) {
             idsToUpdate.add(eventId);
-            log.info("idsToUpdate: {}", idsToUpdate);
+            log.info("CACHE: idsToUpdate: {}", idsToUpdate);
         }
     }
 

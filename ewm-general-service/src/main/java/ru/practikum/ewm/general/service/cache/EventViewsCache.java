@@ -39,7 +39,7 @@ public class EventViewsCache {
     }
 
     public Long getOrNull(long eventId) {
-        log.info("viewsByUri: {}", viewsByUri);
+        log.info("CACHE: viewsByUri: {}", viewsByUri);
         return viewsByUri.getOrDefault(getEventUri(eventId), null);
     }
 }
