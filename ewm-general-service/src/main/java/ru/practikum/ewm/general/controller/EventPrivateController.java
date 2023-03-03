@@ -41,11 +41,6 @@ public class EventPrivateController {
         return eventPrivateService.getAllForOwner(userId, from, size);
     }
 
-    @PatchMapping("{eventId}/cancel")
-    public EventFullDto cancelEvent(@Positive @PathVariable long userId, @Positive @PathVariable long eventId) {
-        return eventPrivateService.cancelEvent(userId, eventId);
-    }
-
     @PatchMapping("{eventId}")
     public EventFullDto update(@Positive @PathVariable long userId,
                                @RequestBody EventUpdateDto dto,

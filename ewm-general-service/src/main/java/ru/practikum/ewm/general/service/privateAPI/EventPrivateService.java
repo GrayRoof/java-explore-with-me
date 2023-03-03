@@ -16,7 +16,5 @@ public interface EventPrivateService {
 
     EventFullDto update(long userId, long eventId, EventUpdateDto dto);
 
-    EventFullDto cancelEvent(long eventId, long userId);
-
     StatusResponseDto setStatusToRequests(long userId, long eventId, StatusRequestDto statusRequestDto);
 }

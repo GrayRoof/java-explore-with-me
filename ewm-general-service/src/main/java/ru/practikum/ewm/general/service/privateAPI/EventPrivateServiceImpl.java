@@ -9,6 +9,7 @@ import ru.practikum.ewm.general.exception.NotFoundException;
 import ru.practikum.ewm.general.model.*;
 import ru.practikum.ewm.general.model.dto.*;
 import ru.practikum.ewm.general.model.enums.EventState;
+import ru.practikum.ewm.general.model.enums.EventStateAction;
 import ru.practikum.ewm.general.model.enums.RequestStatus;
 import ru.practikum.ewm.general.model.mapper.CategoryMapper;
 import ru.practikum.ewm.general.model.mapper.EventMapper;
@@ -25,8 +26,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/* TODO set extra data to event: views */
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +35,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final UserAdminService userAdminService;
     private final CategoryPublicService categoryService;
     private final RequestPrivateService requestPrivateService;
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public EventFullDto getForOwner(long eventId, long userId) {
@@ -85,14 +86,17 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public EventFullDto update(long userId, long eventId, EventUpdateDto dto) {
 
-        User initiator = userAdminService.getEntity(userId);
+        User requester = userAdminService.getEntity(userId);
         Event event = eventRepository.get(eventId);
-        if (!event.getInitiator().equals(initiator)) {
-            throw new NotFoundException("Not owner");
+
+        validateUser(event.getInitiator(), requester);
+
+        LocalDateTime startEvent = null;
+        if (dto.getEventDate() != null) {
+            startEvent = LocalDateTime.parse(dto.getEventDate(), FORMATTER);
         }
-        if (event.getState().equals(EventState.PUBLISHED)) {
-            throw new NotAvailableException("already PUBLISHED");
-        }
+        validateUpdateData(event.getState(), startEvent, event.getEventDate());
+
         if (dto.getDescription() != null) {
             event.setDescription(dto.getDescription());
         }
@@ -102,17 +106,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         if (dto.getAnnotation() != null) {
             event.setAnnotation(dto.getAnnotation());
         }
-        if (dto.getEventDate() != null) {
-            LocalDateTime startEvent = LocalDateTime.parse(dto.getEventDate(), DateTimeFormatter
-                    .ofPattern("yyyy-MM-dd HH:mm:ss"));
-            if (LocalDateTime.now().plusHours(2).isAfter(startEvent)) {
-                throw new NotAvailableException("createTimeLag");
-            }
+        if (startEvent != null) {
             event.setEventDate(startEvent);
-        } else {
-            if (LocalDateTime.now().plusHours(2).isAfter(event.getEventDate())) {
-                throw new NotAvailableException("createTimeLag");
-            }
         }
         if (dto.getPaid() != null) {
             event.setPaid(dto.getPaid());
@@ -124,18 +119,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             event.setTitle(dto.getTitle());
         }
         if (dto.getStateAction() != null) {
-            switch (dto.getStateAction()) {
-                case CANCEL_REVIEW:
-                    if (event.getState().equals(EventState.PENDING)) {
-                        event.setState(EventState.CANCELED);
-                    }
-                    break;
-                case SEND_TO_REVIEW:
-                    if (event.getState().equals(EventState.CANCELED)) {
-                        event.setState(EventState.PENDING);
-                    }
-                    break;
-            }
+            event.setState(getStateByAction(event.getState(), dto.getStateAction()));
         }
 
         EventFullDto fullDto = EventMapper.toFullDto(eventRepository.save(event));
@@ -143,27 +127,28 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         return fullDto;
     }
 
-    @Override
-    public EventFullDto cancelEvent(long eventId, long userId) {
-        User initiator = UserMapper.toUser(userAdminService.get(userId));
-        Event event = eventRepository.get(eventId);
-        if (!event.getInitiator().equals(initiator)) {
-            throw new NotFoundException("initiator");
+    private EventState getStateByAction(EventState currentState, EventStateAction stateAction) {
+        EventState stateToUpdate = currentState;
+        switch (stateAction) {
+            case CANCEL_REVIEW:
+                if (currentState.equals(EventState.PENDING)) {
+                    stateToUpdate = EventState.CANCELED;
+                }
+                break;
+            case SEND_TO_REVIEW:
+                if (currentState.equals(EventState.CANCELED)) {
+                    stateToUpdate = EventState.PENDING;
+                }
+                break;
         }
-        if (event.getState().equals(EventState.PENDING)) {
-            event.setState(EventState.CANCELED);
-            eventRepository.save(event);
-            log.info("Событие с id = {} было отменено", eventId);
-            return EventMapper.toFullDto(event);
-        } else {
-            throw new NotAvailableException("not PENDING");
-        }
+        return stateToUpdate;
     }
 
     @Override
     public StatusResponseDto setStatusToRequests(long userId, long eventId, StatusRequestDto statusRequestDto) {
-        User eventInitiator = userAdminService.getEntity(userId);
+        User requester = userAdminService.getEntity(userId);
         Event event = eventRepository.get(eventId);
+        validateUser(event.getInitiator(), requester);
         boolean limited = event.getParticipantLimit() > 0;
         long confirmedCount = requestPrivateService.getCountConfirmedForEvent(eventId);
         long eventCapacity = limited ? event.getParticipantLimit() - confirmedCount : Long.MAX_VALUE;
@@ -202,7 +187,31 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             responseDto.setConfirmedRequests(confirmed);
             return responseDto;
         } else {
-            throw new NotAvailableException("event capacity");
+            throw new NotAvailableException("Превышено количество заявок на участие в Событии!");
+        }
+    }
+
+    private void validateUser(User initiator, User requester) {
+        if (!initiator.equals(requester)) {
+            throw new NotFoundException("Пользователь не является инициатором События!");
+        }
+    }
+
+    private void validateUpdateData(EventState state, LocalDateTime eventDateToUpdate, LocalDateTime eventDate) {
+
+        if (state.equals(EventState.PUBLISHED)) {
+            throw new NotAvailableException("Невозможно изменить опубликованное событие!");
+        }
+        if (eventDateToUpdate != null) {
+            if (LocalDateTime.now().plusHours(2).isAfter(eventDateToUpdate)) {
+                throw new NotAvailableException("Событие должно начаться не раньше, " +
+                        "чем через 2 часа от текущего времени");
+            }
+        } else {
+            if (LocalDateTime.now().plusHours(2).isAfter(eventDate)) {
+                throw new NotAvailableException("Невозможно изменить дату события, " +
+                        "которое произойдет в ближайшие 2 часа!");
+            }
         }
     }
 }
