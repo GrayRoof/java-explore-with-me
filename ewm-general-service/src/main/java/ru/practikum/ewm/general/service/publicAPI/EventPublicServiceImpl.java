@@ -44,6 +44,7 @@ public class EventPublicServiceImpl implements EventPublicService {
                 .size(size)
                 .build();
 
+        hitClient.addHit(request);
         return eventRepository.findAll(filter)
                 .stream()
                 .map(EventMapper::toFullDto)
