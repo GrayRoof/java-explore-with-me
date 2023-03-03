@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import ru.practicum.statistic.dto.HitDto;
 import ru.practicum.statistic.dto.StatisticViewDto;
@@ -81,7 +82,8 @@ public class StatisticHttpClient {
             log.info("StatisticHttpClient: получить данные по запросу {}", queryString);
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(URI.create(statsServiceUri + "/stats" + queryString))
-                    .header(HttpHeaders.ACCEPT, "application/json")
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                     .build();
 
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
@@ -103,14 +105,11 @@ public class StatisticHttpClient {
 
     private String toQueryString(String start, String end, List<String> uris, Boolean unique) {
 
-        String queryString = String.format("?start=%s&end=%s&unique=%b",
-                start, end, unique);
+        String queryString = String.format("?start=%s&end=%s&unique=%b", start, end, unique);
         if (!uris.isEmpty()) {
             queryString += "&uris=" + String.join(",", uris);
         }
 
         return queryString;
     }
-
-
 }

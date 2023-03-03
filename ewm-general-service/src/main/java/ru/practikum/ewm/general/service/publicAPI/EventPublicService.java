@@ -1,7 +1,7 @@
 package ru.practikum.ewm.general.service.publicAPI;
 
 import ru.practikum.ewm.general.model.Event;
-import ru.practikum.ewm.general.model.SortMethod;
+import ru.practikum.ewm.general.model.enums.SortMethod;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +24,6 @@ public interface EventPublicService {
                                     HttpServletRequest request);
 
     Event getEntity(long eventId);
-
-    boolean isEventAvailable(long eventId);
 
     Collection<Event> findAllByIdIn(Collection<Long> ids);
 }

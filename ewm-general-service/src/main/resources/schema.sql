@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS events
     requestModeration   BOOLEAN                                 NOT NULL,
     published           TIMESTAMP WITHOUT TIME ZONE,
     state               VARCHAR,
+    viewsCache          BIGINT,
 
     CONSTRAINT pk_events PRIMARY KEY (id),
     FOREIGN KEY (initiatorID) REFERENCES users (id) ON DELETE CASCADE,

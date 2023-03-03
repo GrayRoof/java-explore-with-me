@@ -1,7 +1,7 @@
 package ru.practikum.ewm.general.model.dto;
 
 import lombok.Data;
-import ru.practikum.ewm.general.model.EventState;
+import ru.practikum.ewm.general.model.enums.EventState;
 
 @Data
 public class EventFullDto {

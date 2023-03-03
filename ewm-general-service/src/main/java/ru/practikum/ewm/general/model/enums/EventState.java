@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.model;
+package ru.practikum.ewm.general.model.enums;
 
 public enum EventState {
     CANCELED,

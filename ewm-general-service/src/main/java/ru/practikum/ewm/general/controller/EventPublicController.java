@@ -3,7 +3,7 @@ package ru.practikum.ewm.general.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.exception.NotValidException;
-import ru.practikum.ewm.general.model.SortMethod;
+import ru.practikum.ewm.general.model.enums.SortMethod;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
 import ru.practikum.ewm.general.service.publicAPI.EventPublicService;
 

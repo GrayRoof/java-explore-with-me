@@ -1,7 +1,7 @@
 package ru.practikum.ewm.general.model.dto;
 
 import lombok.Data;
-import ru.practikum.ewm.general.model.EventStateAction;
+import ru.practikum.ewm.general.model.enums.EventStateAction;
 
 @Data
 public class EventAdminUpdateDto {

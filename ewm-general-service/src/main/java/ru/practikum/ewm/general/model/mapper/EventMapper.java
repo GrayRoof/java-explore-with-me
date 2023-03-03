@@ -5,6 +5,7 @@ import ru.practikum.ewm.general.model.dto.EventFullDto;
 import ru.practikum.ewm.general.model.dto.EventShortDto;
 import ru.practikum.ewm.general.model.dto.LocationDto;
 import ru.practikum.ewm.general.model.dto.NewEventDto;
+import ru.practikum.ewm.general.model.enums.EventState;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

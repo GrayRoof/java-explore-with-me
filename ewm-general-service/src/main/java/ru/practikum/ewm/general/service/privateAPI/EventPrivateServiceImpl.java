@@ -8,6 +8,8 @@ import ru.practikum.ewm.general.exception.NotAvailableException;
 import ru.practikum.ewm.general.exception.NotFoundException;
 import ru.practikum.ewm.general.model.*;
 import ru.practikum.ewm.general.model.dto.*;
+import ru.practikum.ewm.general.model.enums.EventState;
+import ru.practikum.ewm.general.model.enums.RequestStatus;
 import ru.practikum.ewm.general.model.mapper.CategoryMapper;
 import ru.practikum.ewm.general.model.mapper.EventMapper;
 import ru.practikum.ewm.general.model.mapper.UserMapper;

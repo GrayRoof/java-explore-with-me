@@ -1,9 +1,8 @@
-package ru.practikum.ewm.general.model;
+package ru.practikum.ewm.general.model.enums;
 
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder

@@ -7,8 +7,11 @@ import ru.practikum.ewm.general.exception.NotAvailableException;
 import ru.practikum.ewm.general.model.*;
 import ru.practikum.ewm.general.model.dto.EventAdminUpdateDto;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
+import ru.practikum.ewm.general.model.enums.EventSearchFilter;
+import ru.practikum.ewm.general.model.enums.EventState;
+import ru.practikum.ewm.general.model.enums.EventStateAction;
+import ru.practikum.ewm.general.model.enums.SortMethod;
 import ru.practikum.ewm.general.model.mapper.EventMapper;
-import ru.practikum.ewm.general.repository.EventExtraFilterRepository;
 import ru.practikum.ewm.general.repository.EventRepository;
 import ru.practikum.ewm.general.service.publicAPI.CategoryPublicService;
 
@@ -26,7 +29,6 @@ import java.util.stream.Collectors;
 public class EventAdminServiceImpl implements EventAdminService {
 
     private final EventRepository eventRepository;
-    private final EventExtraFilterRepository filterRepository;
     private final CategoryPublicService categoryPublicService;
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -94,7 +96,7 @@ public class EventAdminServiceImpl implements EventAdminService {
                 .size(size)
                 .build();
 
-        return filterRepository.findAll(filter).stream()
+        return eventRepository.findAll(filter).stream()
                 .map(EventMapper::toFullDto)
                 .collect(Collectors.toList());
     }

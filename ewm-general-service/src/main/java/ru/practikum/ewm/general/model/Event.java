@@ -2,6 +2,7 @@ package ru.practikum.ewm.general.model;
 
 import lombok.*;
 import org.hibernate.annotations.Cascade;
+import ru.practikum.ewm.general.model.enums.EventState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -42,7 +43,7 @@ public class Event {
     LocalDateTime publishedOn;
     @Enumerated(EnumType.STRING)
     EventState state;
-    @Transient
+    @Column(name = "viewscache")
     long views;
     @Transient
     long confirmedRequests;

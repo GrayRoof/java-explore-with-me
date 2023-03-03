@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.practikum.ewm.general.exception.NotAvailableException;
 import ru.practikum.ewm.general.model.*;
 import ru.practikum.ewm.general.model.dto.RequestDto;
+import ru.practikum.ewm.general.model.enums.EventState;
+import ru.practikum.ewm.general.model.enums.RequestStatus;
 import ru.practikum.ewm.general.model.mapper.RequestMapper;
 import ru.practikum.ewm.general.repository.RequestRepository;
 import ru.practikum.ewm.general.service.adminAPI.UserAdminService;

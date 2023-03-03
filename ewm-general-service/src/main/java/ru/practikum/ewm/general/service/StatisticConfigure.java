@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.service.publicAPI;
+package ru.practikum.ewm.general.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +17,6 @@ public class StatisticConfigure {
 
     @Bean
     public StatisticHttpClient init() {
-
         return new StatisticHttpClient(statsServiceUri, application, new ObjectMapper());
     }
 }

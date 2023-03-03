@@ -11,7 +11,7 @@ import java.util.Collection;
 
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends JpaRepository<Event, Long>, EventExtraFilterRepository {
 
     default Event get(long eventId) {
          return findById(eventId).orElseThrow(() ->

@@ -3,7 +3,7 @@ package ru.practikum.ewm.general.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practikum.ewm.general.exception.NotFoundException;
 import ru.practikum.ewm.general.model.ParticipationRequest;
-import ru.practikum.ewm.general.model.RequestStatus;
+import ru.practikum.ewm.general.model.enums.RequestStatus;
 
 import java.util.Collection;
 import java.util.List;

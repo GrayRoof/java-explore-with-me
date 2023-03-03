@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class HitService {
 
     private final HitRepository hitRepository;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Transactional
     public HitDto add(HitDto hitDto) {
@@ -33,8 +34,8 @@ public class HitService {
     }
 
     public List<StatisticViewDto> getStatistic(String start, String end, String[] uris, boolean unique) {
-        LocalDateTime startDateTime = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime endDateTime = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime startDateTime = LocalDateTime.parse(start, FORMATTER);
+        LocalDateTime endDateTime = LocalDateTime.parse(end, FORMATTER);
         List<StatisticView> result;
         if (!unique) {
             result = hitRepository.findNotUniqueIP(startDateTime, endDateTime, List.of(uris));

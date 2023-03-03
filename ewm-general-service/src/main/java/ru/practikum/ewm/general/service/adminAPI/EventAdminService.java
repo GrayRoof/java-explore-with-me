@@ -1,7 +1,7 @@
 package ru.practikum.ewm.general.service.adminAPI;
 
 import ru.practikum.ewm.general.model.Event;
-import ru.practikum.ewm.general.model.EventState;
+import ru.practikum.ewm.general.model.enums.EventState;
 import ru.practikum.ewm.general.model.dto.EventAdminUpdateDto;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
 

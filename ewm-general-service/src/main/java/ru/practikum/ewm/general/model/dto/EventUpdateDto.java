@@ -2,7 +2,7 @@ package ru.practikum.ewm.general.model.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practikum.ewm.general.model.EventStateAction;
+import ru.practikum.ewm.general.model.enums.EventStateAction;
 
 @Data
 @NoArgsConstructor

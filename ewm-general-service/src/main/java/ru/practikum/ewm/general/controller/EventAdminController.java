@@ -3,7 +3,7 @@ package ru.practikum.ewm.general.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practikum.ewm.general.model.EventState;
+import ru.practikum.ewm.general.model.enums.EventState;
 import ru.practikum.ewm.general.model.dto.EventAdminUpdateDto;
 import ru.practikum.ewm.general.model.dto.EventFullDto;
 import ru.practikum.ewm.general.service.adminAPI.EventAdminService;
