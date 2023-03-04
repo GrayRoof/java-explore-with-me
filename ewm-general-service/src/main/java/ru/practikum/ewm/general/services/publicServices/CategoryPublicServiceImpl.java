@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.services.publicAPI;
+package ru.practikum.ewm.general.services.publicServices;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;

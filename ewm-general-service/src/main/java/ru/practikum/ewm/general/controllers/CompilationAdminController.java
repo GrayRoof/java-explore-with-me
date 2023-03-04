@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.models.dto.CompilationDto;
 import ru.practikum.ewm.general.models.dto.NewCompilationDto;
 import ru.practikum.ewm.general.models.dto.UpdateCompilationDto;
-import ru.practikum.ewm.general.services.adminAPI.CompilationAdminService;
+import ru.practikum.ewm.general.services.adminServices.CompilationAdminService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;

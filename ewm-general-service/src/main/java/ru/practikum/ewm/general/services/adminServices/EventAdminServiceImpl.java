@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.services.adminAPI;
+package ru.practikum.ewm.general.services.adminServices;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import ru.practikum.ewm.general.models.enums.EventStateAction;
 import ru.practikum.ewm.general.models.enums.SortMethod;
 import ru.practikum.ewm.general.models.mappers.EventMapper;
 import ru.practikum.ewm.general.repositories.EventRepository;
-import ru.practikum.ewm.general.services.publicAPI.CategoryPublicService;
+import ru.practikum.ewm.general.services.publicServices.CategoryPublicService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -108,21 +108,18 @@ public class EventAdminServiceImpl implements EventAdminService {
     private EventState getStateForEvent(Event event, EventStateAction action) {
         EventState result = EventState.CANCELED;
         if (action != null) {
-            switch (action) {
-                case PUBLISH_EVENT:
-                    if (!event.getState().equals(EventState.PENDING)) {
-                        throw new NotAvailableException("Событие не находится в состоянии PENDING!");
-                    }
-                    if (!event.getEventDate().minusHours(2).isAfter(LocalDateTime.now())) {
-                            throw new NotAvailableException("Дата события не может быть раньше текущей даты!");
-                    }
-                    result = EventState.PUBLISHED;
-                    break;
-                case REJECT_EVENT:
-                    if (event.getState().equals(EventState.PUBLISHED)) {
-                        throw new NotAvailableException("Невозможно отменить опубликованное событие!");
-                    }
-                    break;
+            if (action.equals(EventStateAction.PUBLISH_EVENT)) {
+                if (!event.getState().equals(EventState.PENDING)) {
+                    throw new NotAvailableException("Событие не находится в состоянии PENDING!");
+                }
+                if (!event.getEventDate().minusHours(2).isAfter(LocalDateTime.now())) {
+                    throw new NotAvailableException("Дата события не может быть раньше текущей даты!");
+                }
+                result = EventState.PUBLISHED;
+            } else if (action.equals(EventStateAction.REJECT_EVENT)) {
+                if (event.getState().equals(EventState.PUBLISHED)) {
+                    throw new NotAvailableException("Невозможно отменить опубликованное событие!");
+                }
             }
         }
         return result;

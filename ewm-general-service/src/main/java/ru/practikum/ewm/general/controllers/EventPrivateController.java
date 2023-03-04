@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.models.dto.*;
-import ru.practikum.ewm.general.services.privateAPI.EventPrivateService;
+import ru.practikum.ewm.general.services.privateServices.EventPrivateService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;

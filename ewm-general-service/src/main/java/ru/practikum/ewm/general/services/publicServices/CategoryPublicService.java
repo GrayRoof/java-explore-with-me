@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.services.publicAPI;
+package ru.practikum.ewm.general.services.publicServices;
 
 import ru.practikum.ewm.general.models.Category;
 import ru.practikum.ewm.general.models.dto.CategoryDto;

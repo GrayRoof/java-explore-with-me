@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.exceptions.NotValidException;
 import ru.practikum.ewm.general.models.enums.SortMethod;
 import ru.practikum.ewm.general.models.dto.EventFullDto;
-import ru.practikum.ewm.general.services.publicAPI.EventPublicService;
+import ru.practikum.ewm.general.services.publicServices.EventPublicService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;

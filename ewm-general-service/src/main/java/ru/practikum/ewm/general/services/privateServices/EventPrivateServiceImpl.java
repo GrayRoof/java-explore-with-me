@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.services.privateAPI;
+package ru.practikum.ewm.general.services.privateServices;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +16,8 @@ import ru.practikum.ewm.general.models.mappers.EventMapper;
 import ru.practikum.ewm.general.models.mappers.UserMapper;
 import ru.practikum.ewm.general.paginations.OffsetPageable;
 import ru.practikum.ewm.general.repositories.EventRepository;
-import ru.practikum.ewm.general.services.adminAPI.UserAdminService;
-import ru.practikum.ewm.general.services.publicAPI.CategoryPublicService;
+import ru.practikum.ewm.general.services.adminServices.UserAdminService;
+import ru.practikum.ewm.general.services.publicServices.CategoryPublicService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -129,17 +129,14 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     private EventState getStateByAction(EventState currentState, EventStateAction stateAction) {
         EventState stateToUpdate = currentState;
-        switch (stateAction) {
-            case CANCEL_REVIEW:
-                if (currentState.equals(EventState.PENDING)) {
-                    stateToUpdate = EventState.CANCELED;
-                }
-                break;
-            case SEND_TO_REVIEW:
-                if (currentState.equals(EventState.CANCELED)) {
-                    stateToUpdate = EventState.PENDING;
-                }
-                break;
+        if (stateAction.equals(EventStateAction.CANCEL_REVIEW)) {
+            if (currentState.equals(EventState.PENDING)) {
+                stateToUpdate = EventState.CANCELED;
+            }
+        } else if (stateAction.equals(EventStateAction.SEND_TO_REVIEW)) {
+            if (currentState.equals(EventState.CANCELED)) {
+                stateToUpdate = EventState.PENDING;
+            }
         }
         return stateToUpdate;
     }
@@ -155,13 +152,10 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         RequestStatus status = statusRequestDto.getStatus();
         StatusResponseDto result = new StatusResponseDto();
         if (status != null) {
-            switch (status) {
-                case REJECTED:
-                    result = rejectRequests(statusRequestDto.getRequestIds());
-                    break;
-                case CONFIRMED:
-                    result = confirmByLimitRequests(statusRequestDto.getRequestIds(), eventCapacity);
-                    break;
+            if (status.equals(RequestStatus.REJECTED)) {
+                result = rejectRequests(statusRequestDto.getRequestIds());
+            } else if (status.equals(RequestStatus.CONFIRMED)) {
+                result = confirmByLimitRequests(statusRequestDto.getRequestIds(), eventCapacity);
             }
         }
 

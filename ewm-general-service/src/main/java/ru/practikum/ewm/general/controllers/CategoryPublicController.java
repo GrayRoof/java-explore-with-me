@@ -3,7 +3,7 @@ package ru.practikum.ewm.general.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.models.dto.CategoryDto;
-import ru.practikum.ewm.general.services.publicAPI.CategoryPublicService;
+import ru.practikum.ewm.general.services.publicServices.CategoryPublicService;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;

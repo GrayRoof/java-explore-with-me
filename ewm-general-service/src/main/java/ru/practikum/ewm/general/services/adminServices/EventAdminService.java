@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.services.adminAPI;
+package ru.practikum.ewm.general.services.adminServices;
 
 import ru.practikum.ewm.general.models.Event;
 import ru.practikum.ewm.general.models.enums.EventState;

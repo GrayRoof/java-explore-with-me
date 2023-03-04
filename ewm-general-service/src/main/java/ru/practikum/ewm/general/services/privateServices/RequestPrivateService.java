@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.services.privateAPI;
+package ru.practikum.ewm.general.services.privateServices;
 
 import ru.practikum.ewm.general.models.dto.RequestDto;
 

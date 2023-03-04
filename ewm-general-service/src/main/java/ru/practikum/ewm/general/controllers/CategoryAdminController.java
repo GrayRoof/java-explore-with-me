@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.models.dto.CategoryDto;
 import ru.practikum.ewm.general.models.dto.NewCategoryDto;
-import ru.practikum.ewm.general.services.adminAPI.CategoryAdminService;
+import ru.practikum.ewm.general.services.adminServices.CategoryAdminService;
 
 import javax.validation.Valid;
 

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.models.dto.RequestDto;
-import ru.practikum.ewm.general.services.privateAPI.RequestPrivateService;
+import ru.practikum.ewm.general.services.privateServices.RequestPrivateService;
 
 import javax.validation.constraints.Positive;
 import java.util.Collection;

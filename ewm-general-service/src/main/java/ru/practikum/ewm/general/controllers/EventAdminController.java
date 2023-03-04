@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practikum.ewm.general.models.enums.EventState;
 import ru.practikum.ewm.general.models.dto.EventAdminUpdateDto;
 import ru.practikum.ewm.general.models.dto.EventFullDto;
-import ru.practikum.ewm.general.services.adminAPI.EventAdminService;
+import ru.practikum.ewm.general.services.adminServices.EventAdminService;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;

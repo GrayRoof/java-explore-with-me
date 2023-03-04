@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.services.adminAPI;
+package ru.practikum.ewm.general.services.adminServices;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

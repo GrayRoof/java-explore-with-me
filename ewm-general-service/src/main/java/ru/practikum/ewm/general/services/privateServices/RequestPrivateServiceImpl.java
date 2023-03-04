@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.services.privateAPI;
+package ru.practikum.ewm.general.services.privateServices;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +10,8 @@ import ru.practikum.ewm.general.models.enums.EventState;
 import ru.practikum.ewm.general.models.enums.RequestStatus;
 import ru.practikum.ewm.general.models.mappers.RequestMapper;
 import ru.practikum.ewm.general.repositories.RequestRepository;
-import ru.practikum.ewm.general.services.adminAPI.UserAdminService;
-import ru.practikum.ewm.general.services.publicAPI.EventPublicService;
+import ru.practikum.ewm.general.services.adminServices.UserAdminService;
+import ru.practikum.ewm.general.services.publicServices.EventPublicService;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

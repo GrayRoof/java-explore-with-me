@@ -1,4 +1,4 @@
-package ru.practikum.ewm.general.services.adminAPI;
+package ru.practikum.ewm.general.services.adminServices;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ import ru.practikum.ewm.general.models.dto.UpdateCompilationDto;
 import ru.practikum.ewm.general.models.mappers.CompilationMapper;
 import ru.practikum.ewm.general.models.mappers.EventMapper;
 import ru.practikum.ewm.general.repositories.CompilationRepository;
-import ru.practikum.ewm.general.services.publicAPI.EventPublicService;
+import ru.practikum.ewm.general.services.publicServices.EventPublicService;
 
 import java.util.HashSet;
 import java.util.Set;
