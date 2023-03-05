@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import ru.practicum.statistic.dto.HitDto;
 import ru.practicum.statistic.dto.StatisticViewDto;
 
@@ -22,6 +24,7 @@ import java.util.List;
 
 
 @Slf4j
+@Service
 public class StatisticHttpClient {
 
     private final HttpClient httpClient;
@@ -29,7 +32,7 @@ public class StatisticHttpClient {
     private final String statsServiceUri;
     private final ObjectMapper mapper;
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     public StatisticHttpClient(@Value("${ewm-statistic-service.uri}") String statsServiceUri,
@@ -49,7 +52,7 @@ public class StatisticHttpClient {
         hitDto.setApp(app);
         hitDto.setUri(request.getRequestURI());
         hitDto.setIp(request.getRemoteAddr());
-        hitDto.setTimestamp(LocalDateTime.now().format(dateTimeFormatter));
+        hitDto.setTimestamp(LocalDateTime.now().format(FORMATTER));
 
         try {
             HttpRequest.BodyPublisher bodyPublisher = HttpRequest
@@ -79,7 +82,8 @@ public class StatisticHttpClient {
             log.info("StatisticHttpClient: получить данные по запросу {}", queryString);
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(URI.create(statsServiceUri + "/stats" + queryString))
-                    .header(HttpHeaders.ACCEPT, "application/json")
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                     .build();
 
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
@@ -101,14 +105,11 @@ public class StatisticHttpClient {
 
     private String toQueryString(String start, String end, List<String> uris, Boolean unique) {
 
-        String queryString = String.format("?start=%s&end=%s&unique=%b",
-                start, end, unique);
+        String queryString = String.format("?start=%s&end=%s&unique=%b", start, end, unique);
         if (!uris.isEmpty()) {
             queryString += "&uris=" + String.join(",", uris);
         }
 
         return queryString;
     }
-
-
 }
