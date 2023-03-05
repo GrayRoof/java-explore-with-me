@@ -2,6 +2,7 @@ package ru.practikum.ewm.general.models.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practikum.ewm.general.models.enums.EventReactionAction;
 import ru.practikum.ewm.general.models.enums.EventStateAction;
 
 @Data
@@ -17,4 +18,5 @@ public class EventUpdateDto {
     Boolean requestModeration;
     String title;
     EventStateAction stateAction;
+    EventReactionAction reactionAction;
 }

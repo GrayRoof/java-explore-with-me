@@ -60,4 +60,11 @@ public class EventPrivateController {
                                        @RequestBody StatusRequestDto statusRequestDto) {
         return eventPrivateService.setStatusToRequests(userId, eventId, statusRequestDto);
     }
+
+    @PatchMapping("{eventId}/reactions")
+    public void setReaction(@PathVariable long userId,
+                                    @PathVariable long eventId,
+                                    @RequestBody EventReactionDto action) {
+        eventPrivateService.setReaction(userId, eventId, action.getAction());
+    }
 }

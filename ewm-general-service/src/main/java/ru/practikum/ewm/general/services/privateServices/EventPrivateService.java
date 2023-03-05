@@ -1,6 +1,7 @@
 package ru.practikum.ewm.general.services.privateServices;
 
 import ru.practikum.ewm.general.models.dto.*;
+import ru.practikum.ewm.general.models.enums.EventReactionAction;
 
 import java.util.Collection;
 
@@ -17,4 +18,6 @@ public interface EventPrivateService {
     EventFullDto update(long userId, long eventId, EventUpdateDto dto);
 
     StatusResponseDto setStatusToRequests(long userId, long eventId, StatusRequestDto statusRequestDto);
+
+    void setReaction(long userId, long eventId, EventReactionAction action);
 }
