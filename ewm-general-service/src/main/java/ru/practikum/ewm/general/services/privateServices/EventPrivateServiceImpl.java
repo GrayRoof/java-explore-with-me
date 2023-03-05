@@ -196,8 +196,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             } else {
                 if (existReaction != null) {
                     reactionRepository.delete(existReaction);
-                }
-                else {
+                } else {
                     throw new NotAvailableException("Не найдено реакции для этого События!");
                 }
             }
