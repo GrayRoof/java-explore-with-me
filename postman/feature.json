@@ -6332,7 +6332,7 @@
 									"        const user = await api.addUser(rnd.getUser());\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
 									"        let eventBody = rnd.getEvent(category.id);\r",
-									"        eventBody['requestModeration'] = true\r",
+									"        eventBody['requestModeration'] = false\r",
 									"        let event = await api.addEvent(user.id, eventBody);\r",
 									"        event = await api.publishEvent(event.id);\r",
 									"        const submittedUser = await api.addUser(rnd.getUser());\r",
