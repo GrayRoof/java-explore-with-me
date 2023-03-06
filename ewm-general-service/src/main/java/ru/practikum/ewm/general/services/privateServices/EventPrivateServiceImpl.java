@@ -8,7 +8,6 @@ import ru.practikum.ewm.general.exceptions.NotAvailableException;
 import ru.practikum.ewm.general.exceptions.NotFoundException;
 import ru.practikum.ewm.general.models.*;
 import ru.practikum.ewm.general.models.dto.*;
-import ru.practikum.ewm.general.models.enums.EventReactionAction;
 import ru.practikum.ewm.general.models.enums.EventState;
 import ru.practikum.ewm.general.models.enums.EventStateAction;
 import ru.practikum.ewm.general.models.enums.RequestStatus;
@@ -166,14 +165,14 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     }
 
     @Override
-    public void setReaction(long userId, long eventId, EventReactionAction action) {
-        log.info("REACTION: try to set reaction to {} by {} action is {}", eventId, userId, action);
+    public void setReaction(long userId, long eventId, Boolean isPositive) {
+        log.info("REACTION: try to set reaction to {} by {} action is {}", eventId, userId, isPositive);
         User user = userAdminService.getEntity(userId);
         Event event = eventRepository.get(eventId);
         validateParticipant(event, user);
-        if (action != null) {
+        if (isPositive != null) {
             EventReaction existReaction = reactionRepository.getEventReactionByEventAndUser(event, user);
-            if (action.equals(EventReactionAction.SET_LIKE)) {
+            if (isPositive) {
                 if (existReaction != null) {
                     if (existReaction.isPositive()) {
                         throw new NotAvailableException("Нельзя поставить лайк больше одного раза!");
@@ -183,7 +182,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 } else {
                     reactionRepository.save(new EventReaction(user, event, true));
                 }
-            } else if (action.equals(EventReactionAction.SET_DISLIKE)) {
+            } else {
                 if (existReaction != null) {
                     if (!existReaction.isPositive()) {
                         throw new NotAvailableException("Нельзя поставить дизлайк больше одного раза!");
@@ -193,13 +192,21 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 } else {
                     reactionRepository.save(new EventReaction(user, event, false));
                 }
-            } else {
-                if (existReaction != null) {
-                    reactionRepository.delete(existReaction);
-                } else {
-                    throw new NotAvailableException("Не найдено реакции для этого События!");
-                }
             }
+        }
+    }
+
+    @Override
+    public void deleteReaction(long userId, long eventId) {
+        log.info("REACTION: try to delete reaction to {} by {}", eventId, userId);
+        User user = userAdminService.getEntity(userId);
+        Event event = eventRepository.get(eventId);
+        validateParticipant(event, user);
+        EventReaction existReaction = reactionRepository.getEventReactionByEventAndUser(event, user);
+        if (existReaction != null) {
+            reactionRepository.delete(existReaction);
+        } else {
+            throw new NotAvailableException("Не найдено реакции для этого События!");
         }
     }
 
