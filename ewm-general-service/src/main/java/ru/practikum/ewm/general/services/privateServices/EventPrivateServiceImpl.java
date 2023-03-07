@@ -13,6 +13,7 @@ import ru.practikum.ewm.general.models.enums.EventStateAction;
 import ru.practikum.ewm.general.models.enums.RequestStatus;
 import ru.practikum.ewm.general.models.mappers.CategoryMapper;
 import ru.practikum.ewm.general.models.mappers.EventMapper;
+import ru.practikum.ewm.general.models.mappers.EventReactionMapper;
 import ru.practikum.ewm.general.models.mappers.UserMapper;
 import ru.practikum.ewm.general.paginations.OffsetPageable;
 import ru.practikum.ewm.general.repositories.EventReactionRepository;
@@ -165,10 +166,11 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     }
 
     @Override
-    public void setReaction(long userId, long eventId, Boolean isPositive) {
+    public EventReactionDto setReaction(long userId, long eventId, Boolean isPositive) {
         log.info("REACTION: try to set reaction to {} by {} action is {}", eventId, userId, isPositive);
         User user = userAdminService.getEntity(userId);
         Event event = eventRepository.get(eventId);
+        EventReaction result;
         validateParticipant(event, user);
         if (isPositive != null) {
             EventReaction existReaction = reactionRepository.getEventReactionByEventAndUser(event, user);
@@ -178,9 +180,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                         throw new NotAvailableException("Нельзя поставить лайк больше одного раза!");
                     }
                     existReaction.setPositive(true);
-                    reactionRepository.save(existReaction);
+                    result = reactionRepository.save(existReaction);
                 } else {
-                    reactionRepository.save(new EventReaction(user, event, true));
+                    result = reactionRepository.save(new EventReaction(user, event, true));
                 }
             } else {
                 if (existReaction != null) {
@@ -188,12 +190,15 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                         throw new NotAvailableException("Нельзя поставить дизлайк больше одного раза!");
                     }
                     existReaction.setPositive(false);
-                    reactionRepository.save(existReaction);
+                    result = reactionRepository.save(existReaction);
                 } else {
-                    reactionRepository.save(new EventReaction(user, event, false));
+                    result = reactionRepository.save(new EventReaction(user, event, false));
                 }
             }
+        } else {
+            throw new NotAvailableException("Реакция не задана!");
         }
+        return EventReactionMapper.toDto(result);
     }
 
     @Override

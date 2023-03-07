@@ -24,7 +24,6 @@
 									"        const user = await api.addUser(rnd.getUser());\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
 									"        let eventBody = rnd.getEvent(category.id);\r",
-									"        eventBody['requestModeration'] = false\r",
 									"        let event = await api.addEvent(user.id, eventBody);\r",
 									"        event = await api.publishEvent(event.id);\r",
 									"        const submittedUser = await api.addUser(rnd.getUser());\r",
@@ -32,11 +31,7 @@
 									"        pm.collectionVariables.set('response', requestToJoin);\r",
 									"        pm.collectionVariables.set('uid', submittedUser.id);\r",
 									"        pm.collectionVariables.set('eid', event.id);\r",
-									"        pm.request.body.update({\r",
-									"            mode: 'raw',\r",
-									"            raw: JSON.stringify({action:\"SET_LIKE\"}),\r",
-									"            options: { raw: { language: 'json' } }\r",
-									"        });\r",
+									"        \r",
 									"    } catch(err) {\r",
 									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 									"    }\r",
@@ -74,7 +69,7 @@
 						}
 					],
 					"request": {
-						"method": "PATCH",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -95,7 +90,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId/events/:eventId/reactions",
+							"raw": "{{baseUrl}}/users/:userId/events/reactions/:eventId?isPositive=true",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -103,8 +98,14 @@
 								"users",
 								":userId",
 								"events",
-								":eventId",
-								"reactions"
+								"reactions",
+								":eventId"
+							],
+							"query": [
+								{
+									"key": "isPositive",
+									"value": "true"
+								}
 							],
 							"variable": [
 								{
@@ -116,6 +117,337 @@
 									"key": "eventId",
 									"value": "{{eid}}",
 									"description": "(Required) id события текущего пользователя"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получить рейтинг событий по категории",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const main = async () => {\r",
+									"    const api = new API(pm);\r",
+									"    const rnd = new RandomUtils();\r",
+									"\r",
+									"    try {\r",
+									"        const initiator = await api.addUser(rnd.getUser());\r",
+									"\r",
+									"        const category = await api.addCategory(rnd.getCategory());\r",
+									"\r",
+									"        let firstEventBody = rnd.getEvent(category.id);\r",
+									"        let secondEventBody = rnd.getEvent(category.id);\r",
+									"        firstEventBody['requestModeration'] = false\r",
+									"\r",
+									"        let firstEvent = await api.addEvent(initiator.id, firstEventBody);\r",
+									"        let secondEvent = await api.addEvent(initiator.id, secondEventBody);\r",
+									"\r",
+									"        firstEvent = await api.publishEvent(firstEvent.id);\r",
+									"        secondEvent = await api.publishEvent(secondEvent.id);\r",
+									"\r",
+									"        const firstUser = await api.addUser(rnd.getUser());\r",
+									"        const secondUser = await api.addUser(rnd.getUser());\r",
+									"\r",
+									"        const firstRequest = await api.publishParticipationRequest(firstEvent.id, firstUser.id);\r",
+									"        const thirdRequest = await api.publishParticipationRequest(secondEvent.id, firstUser.id);\r",
+									"        const secondRequest = await api.publishParticipationRequest(firstEvent.id, secondUser.id);\r",
+									"\r",
+									"        await api.addReaction(firstUser.id, firstEvent.id, true);\r",
+									"        await api.addReaction(firstUser.id, secondEvent.id, true);\r",
+									"        await api.addReaction(secondUser.id, firstEvent.id, true);\r",
+									"\r",
+									"        pm.collectionVariables.set('response', firstEvent);\r",
+									"        pm.collectionVariables.set(\"cid\", category.id);\r",
+									"        \r",
+									"    } catch(err) {\r",
+									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"const interval = setInterval(() => {}, 1000);\r",
+									"\r",
+									"setTimeout(async () => \r",
+									"    {\r",
+									"        try {\r",
+									"            // выполняем наш скрипт\r",
+									"            await main();\r",
+									"        } catch (e) {\r",
+									"            console.error(e);\r",
+									"        } finally {\r",
+									"            clearInterval(interval);\r",
+									"        }\r",
+									"    },  \r",
+									"    100 \r",
+									");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 200\", function () {\r",
+									"    pm.response.to.be.ok;    \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/events/rating?categoryId={{cid}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"events",
+								"rating"
+							],
+							"query": [
+								{
+									"key": "categoryId",
+									"value": "{{cid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Попытка установить реакцию (лайк дизлайк) событию без участия",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const main = async () => {\r",
+									"    const api = new API(pm);\r",
+									"    const rnd = new RandomUtils();\r",
+									"\r",
+									"    try {\r",
+									"        const user = await api.addUser(rnd.getUser());\r",
+									"        const category = await api.addCategory(rnd.getCategory());\r",
+									"        let eventBody = rnd.getEvent(category.id);\r",
+									"        eventBody['requestModeration'] = false\r",
+									"        let event = await api.addEvent(user.id, eventBody);\r",
+									"        event = await api.publishEvent(event.id);\r",
+									"        const submittedUser = await api.addUser(rnd.getUser());\r",
+									"        pm.collectionVariables.set('uid', submittedUser.id);\r",
+									"        pm.collectionVariables.set('eid', event.id);\r",
+									"        \r",
+									"    } catch(err) {\r",
+									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"const interval = setInterval(() => {}, 1000);\r",
+									"\r",
+									"setTimeout(async () => \r",
+									"    {\r",
+									"        try {\r",
+									"            // выполняем наш скрипт\r",
+									"            await main();\r",
+									"        } catch (e) {\r",
+									"            console.error(e);\r",
+									"        } finally {\r",
+									"            clearInterval(interval);\r",
+									"        }\r",
+									"    },  \r",
+									"    100 \r",
+									");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 409 и данные в формате json\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
+									"    pm.response.to.be.withBody;\r",
+									"    pm.response.to.be.json;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId/events/:eventId/reactions?isPositive=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId",
+								"events",
+								":eventId",
+								"reactions"
+							],
+							"query": [
+								{
+									"key": "isPositive",
+									"value": "true"
+								}
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{uid}}",
+									"description": "(Required) id текущего пользователя"
+								},
+								{
+									"key": "eventId",
+									"value": "{{eid}}",
+									"description": "(Required) id события текущего пользователя"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление реакции",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const main = async () => {\r",
+									"    const api = new API(pm);\r",
+									"    const rnd = new RandomUtils();\r",
+									"\r",
+									"    try {\r",
+									"        const user = await api.addUser(rnd.getUser());\r",
+									"        const category = await api.addCategory(rnd.getCategory());\r",
+									"        \r",
+									"        let firstEventBody = rnd.getEvent(category.id);\r",
+									"\r",
+									"        let firstEvent = await api.addEvent(initiator.id, firstEventBody);\r",
+									"        firstEvent = await api.publishEvent(firstEvent.id);\r",
+									"        const firstUser = await api.addUser(rnd.getUser());\r",
+									"        const firstRequest = await api.publishParticipationRequest(firstEvent.id, firstUser.id);\r",
+									"        await api.addReaction(firstUser.id, firstEvent.id, true);\r",
+									"\r",
+									"        pm.collectionVariables.set(\"uid\", firstUser.id);\r",
+									"        pm.collectionVariables.set(\"eid\", firstEvent.id);\r",
+									"        \r",
+									"    } catch(err) {\r",
+									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"const interval = setInterval(() => {}, 1000);\r",
+									"\r",
+									"setTimeout(async () => \r",
+									"    {\r",
+									"        try {\r",
+									"            // выполняем наш скрипт\r",
+									"            await main();\r",
+									"        } catch (e) {\r",
+									"            console.error(e);\r",
+									"        } finally {\r",
+									"            clearInterval(interval);\r",
+									"        }\r",
+									"    },  \r",
+									"    100 \r",
+									");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId/events/reactions/:eventId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId",
+								"events",
+								"reactions",
+								":eventId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{uid}}"
+								},
+								{
+									"key": "eventId",
+									"value": "{{eid}}"
 								}
 							]
 						}
@@ -156,6 +488,11 @@
 					"",
 					"    async publishParticipationRequest(eventId, userId, verbose=null) {",
 					"        return this.post('/users/' + userId + '/requests?eventId=' + eventId, null, \"Ошибка при добавлении нового запроса на участие в событии\", verbose);",
+					"    }",
+					"",
+					"    async addReaction(userId, eventId, isPositive, verbose=null) {",
+					"        return this.post('/users/' + ",
+					"        userId + '/events/reactions/' + eventId + '?isPositive=' + isPositive, null, \"Ошибка при добавлении реакции на событие\", verbose);",
 					"    }",
 					"",
 					"    async publishEvent(eventId, verbose=null) {",
@@ -371,6 +708,15 @@
 		},
 		{
 			"key": "catId",
+			"value": ""
+		},
+		{
+			"key": "isPositive",
+			"value": "true",
+			"type": "string"
+		},
+		{
+			"key": "cid",
 			"value": ""
 		}
 	]

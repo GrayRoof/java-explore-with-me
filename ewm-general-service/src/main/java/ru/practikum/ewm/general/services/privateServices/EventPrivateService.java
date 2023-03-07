@@ -18,7 +18,7 @@ public interface EventPrivateService {
 
     StatusResponseDto setStatusToRequests(long userId, long eventId, StatusRequestDto statusRequestDto);
 
-    void setReaction(long userId, long eventId, Boolean isPositive);
+    EventReactionDto setReaction(long userId, long eventId, Boolean isPositive);
 
     void deleteReaction(long userId, long eventId);
 }

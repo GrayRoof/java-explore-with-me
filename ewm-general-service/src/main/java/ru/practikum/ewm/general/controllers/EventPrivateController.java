@@ -62,13 +62,14 @@ public class EventPrivateController {
     }
 
     @PostMapping("/reactions/{eventId}")
-    public void setReaction(@PathVariable long userId,
+    public EventReactionDto setReaction(@PathVariable long userId,
                                     @PathVariable long eventId,
                                     @RequestParam Boolean isPositive) {
-        eventPrivateService.setReaction(userId, eventId, isPositive);
+        return eventPrivateService.setReaction(userId, eventId, isPositive);
     }
 
     @DeleteMapping("/reactions/{eventId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReaction(@PathVariable long userId,
                                @PathVariable long eventId) {
         eventPrivateService.deleteReaction(userId, eventId);
