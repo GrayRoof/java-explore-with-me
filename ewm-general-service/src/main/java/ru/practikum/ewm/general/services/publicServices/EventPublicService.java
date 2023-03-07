@@ -26,4 +26,6 @@ public interface EventPublicService {
     Event getEntity(long eventId);
 
     Collection<Event> findAllByIdIn(Collection<Long> ids);
+
+    Collection<EventFullDto> getRatingByCategory(Long categoryId);
 }

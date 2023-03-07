@@ -75,3 +75,13 @@ CREATE TABLE IF NOT EXISTS compilation_events
     FOREIGN KEY (eventID) REFERENCES events (id) ON DELETE CASCADE,
     FOREIGN KEY (compilationID) REFERENCES compilations (id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS rate_event_reactions
+(
+  userID        BIGINT                                  NOT NULL,
+  eventID       BIGINT                                  NOT NULL,
+  positive      BOOLEAN                                 NOT NULL,
+  CONSTRAINT pk_reactions PRIMARY KEY (userID, eventID),
+  FOREIGN KEY (userID) REFERENCES users (id) ON DELETE CASCADE,
+  FOREIGN KEY (eventID) REFERENCES events (id) ON DELETE CASCADE
+);

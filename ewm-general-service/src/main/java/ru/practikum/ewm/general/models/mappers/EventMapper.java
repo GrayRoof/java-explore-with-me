@@ -58,6 +58,7 @@ public class EventMapper {
         eventFullDto.setConfirmedRequests(event.getConfirmedRequests());
         eventFullDto.setLocation(event.getLocation() != null ?
                 new LocationDto(event.getLocation().getLon(), event.getLocation().getLat()) : null);
+        eventFullDto.setRating(event.getRating());
 
         return eventFullDto;
     }

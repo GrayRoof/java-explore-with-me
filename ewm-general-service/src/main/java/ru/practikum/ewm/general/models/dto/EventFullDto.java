@@ -21,4 +21,5 @@ public class EventFullDto {
     String publishedOn;
     EventState state;
     long confirmedRequests;
+    long rating;
 }
