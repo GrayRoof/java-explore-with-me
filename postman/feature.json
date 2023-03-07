@@ -257,10 +257,11 @@
 									"        const user = await api.addUser(rnd.getUser());\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
 									"        let eventBody = rnd.getEvent(category.id);\r",
-									"        eventBody['requestModeration'] = false\r",
+									"        \r",
 									"        let event = await api.addEvent(user.id, eventBody);\r",
 									"        event = await api.publishEvent(event.id);\r",
 									"        const submittedUser = await api.addUser(rnd.getUser());\r",
+									"\r",
 									"        pm.collectionVariables.set('uid', submittedUser.id);\r",
 									"        pm.collectionVariables.set('eid', event.id);\r",
 									"        \r",
@@ -324,7 +325,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId/events/:eventId/reactions?isPositive=true",
+							"raw": "{{baseUrl}}/users/:userId/events/reactions/:eventId?isPositive=true",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -332,8 +333,8 @@
 								"users",
 								":userId",
 								"events",
-								":eventId",
-								"reactions"
+								"reactions",
+								":eventId"
 							],
 							"query": [
 								{
@@ -381,7 +382,7 @@
 									"    const rnd = new RandomUtils();\r",
 									"\r",
 									"    try {\r",
-									"        const user = await api.addUser(rnd.getUser());\r",
+									"        const initiator = await api.addUser(rnd.getUser());\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
 									"        \r",
 									"        let firstEventBody = rnd.getEvent(category.id);\r",
@@ -394,7 +395,7 @@
 									"\r",
 									"        pm.collectionVariables.set(\"uid\", firstUser.id);\r",
 									"        pm.collectionVariables.set(\"eid\", firstEvent.id);\r",
-									"        \r",
+									"\r",
 									"    } catch(err) {\r",
 									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 									"    }\r",
