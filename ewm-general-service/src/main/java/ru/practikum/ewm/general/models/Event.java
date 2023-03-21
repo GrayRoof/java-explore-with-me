@@ -47,4 +47,6 @@ public class Event {
     long views;
     @Transient
     long confirmedRequests;
+    @Transient
+    long rating;
 }

@@ -10,6 +10,7 @@ import ru.practikum.ewm.general.models.enums.EventSearchFilter;
 import ru.practikum.ewm.general.models.mappers.EventMapper;
 import ru.practikum.ewm.general.models.enums.SortMethod;
 import ru.practikum.ewm.general.models.dto.EventFullDto;
+import ru.practikum.ewm.general.repositories.EventReactionRepository;
 import ru.practikum.ewm.general.repositories.EventRepository;
 import ru.practikum.ewm.general.services.caches.EventViewActualizer;
 
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class EventPublicServiceImpl implements EventPublicService {
 
     private final EventRepository eventRepository;
+    private final EventReactionRepository reactionRepository;
     private final EventViewActualizer actualizer;
     private final StatisticHttpClient hitClient;
 
@@ -74,4 +76,19 @@ public class EventPublicServiceImpl implements EventPublicService {
         });
         return events;
     }
+
+    @Override
+    public Collection<EventFullDto> getRatingByCategory(Long categoryId) {
+        return eventRepository.getCategoryRating(categoryId).stream()
+                .peek(this::setRate)
+                .map(EventMapper::toFullDto)
+                .collect(Collectors.toList());
+    }
+
+    private Event setRate(Event event) {
+        event.setRating(reactionRepository.getRateForEvent(event.getId()));
+        return event;
+    }
+
+
 }
