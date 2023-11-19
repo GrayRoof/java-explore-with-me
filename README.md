@@ -1,2 +1,8 @@
 # java-explore-with-me
-Template repository for ExploreWithMe project.
+ExploreWithMe project.
+
+# pull request
+https://github.com/GrayRoof/java-explore-with-me/pull/4
+
+# Стек
+Spring Boot, Hibernate, PostgreSQL, Lombok, Docker, Postmаn.
