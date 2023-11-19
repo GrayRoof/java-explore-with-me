@@ -13,8 +13,10 @@ import ru.practikum.ewm.general.models.enums.EventStateAction;
 import ru.practikum.ewm.general.models.enums.RequestStatus;
 import ru.practikum.ewm.general.models.mappers.CategoryMapper;
 import ru.practikum.ewm.general.models.mappers.EventMapper;
+import ru.practikum.ewm.general.models.mappers.EventReactionMapper;
 import ru.practikum.ewm.general.models.mappers.UserMapper;
 import ru.practikum.ewm.general.paginations.OffsetPageable;
+import ru.practikum.ewm.general.repositories.EventReactionRepository;
 import ru.practikum.ewm.general.repositories.EventRepository;
 import ru.practikum.ewm.general.services.adminServices.UserAdminService;
 import ru.practikum.ewm.general.services.publicServices.CategoryPublicService;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 public class EventPrivateServiceImpl implements EventPrivateService {
 
     private final EventRepository eventRepository;
+    private final EventReactionRepository reactionRepository;
     private final UserAdminService userAdminService;
     private final CategoryPublicService categoryService;
     private final RequestPrivateService requestPrivateService;
@@ -89,7 +92,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         User requester = userAdminService.getEntity(userId);
         Event event = eventRepository.get(eventId);
 
-        validateUser(event.getInitiator(), requester);
+        validateInitiator(event.getInitiator(), requester);
 
         LocalDateTime startEvent = null;
         if (dto.getEventDate() != null) {
@@ -145,7 +148,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     public StatusResponseDto setStatusToRequests(long userId, long eventId, StatusRequestDto statusRequestDto) {
         User requester = userAdminService.getEntity(userId);
         Event event = eventRepository.get(eventId);
-        validateUser(event.getInitiator(), requester);
+        validateInitiator(event.getInitiator(), requester);
         boolean limited = event.getParticipantLimit() > 0;
         long confirmedCount = requestPrivateService.getCountConfirmedForEvent(eventId);
         long eventCapacity = limited ? event.getParticipantLimit() - confirmedCount : Long.MAX_VALUE;
@@ -160,6 +163,67 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         }
 
         return result;
+    }
+
+    @Override
+    public EventReactionDto setReaction(long userId, long eventId, Boolean isPositive) {
+        log.info("REACTION: try to set reaction to {} by {} action is {}", eventId, userId, isPositive);
+        User user = userAdminService.getEntity(userId);
+        Event event = eventRepository.get(eventId);
+        EventReaction result;
+        validateParticipant(event, user);
+        if (isPositive != null) {
+            EventReaction existReaction = reactionRepository.getEventReactionByEventAndUser(event, user);
+            if (isPositive) {
+                if (existReaction != null) {
+                    if (existReaction.isPositive()) {
+                        throw new NotAvailableException("Нельзя поставить лайк больше одного раза!");
+                    }
+                    existReaction.setPositive(true);
+                    result = reactionRepository.save(existReaction);
+                } else {
+                    result = reactionRepository.save(new EventReaction(user, event, true));
+                }
+            } else {
+                if (existReaction != null) {
+                    if (!existReaction.isPositive()) {
+                        throw new NotAvailableException("Нельзя поставить дизлайк больше одного раза!");
+                    }
+                    existReaction.setPositive(false);
+                    result = reactionRepository.save(existReaction);
+                } else {
+                    result = reactionRepository.save(new EventReaction(user, event, false));
+                }
+            }
+        } else {
+            throw new NotAvailableException("Реакция не задана!");
+        }
+        return EventReactionMapper.toDto(result);
+    }
+
+    @Override
+    public void deleteReaction(long userId, long eventId) {
+        log.info("REACTION: try to delete reaction to {} by {}", eventId, userId);
+        User user = userAdminService.getEntity(userId);
+        Event event = eventRepository.get(eventId);
+        validateParticipant(event, user);
+        EventReaction existReaction = reactionRepository.getEventReactionByEventAndUser(event, user);
+        if (existReaction != null) {
+            reactionRepository.delete(existReaction);
+        } else {
+            throw new NotAvailableException("Не найдено реакции для этого События!");
+        }
+    }
+
+    private void validateParticipant(Event event, User user) {
+        if (requestPrivateService.findAllByRequesterId(user.getId())
+                .stream().noneMatch(requestDto -> requestDto.getRequester() == user.getId()
+                        && requestDto.getEvent() == event.getId())) {
+            throw new NotAvailableException("Только участники мероприятия могут оставить реакцию!");
+        }
+        if (event.getInitiator().equals(user)) {
+            throw new NotAvailableException("Организатор события не может оставить реакцию на свое событие!");
+        }
     }
 
     private StatusResponseDto rejectRequests(List<Long> requestIds) {
@@ -185,7 +249,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         }
     }
 
-    private void validateUser(User initiator, User requester) {
+    private void validateInitiator(User initiator, User requester) {
         if (!initiator.equals(requester)) {
             throw new NotFoundException("Пользователь не является инициатором События!");
         }

@@ -45,4 +45,9 @@ public class EventPublicController {
 
         return eventPublicService.get(eventId, request);
     }
+
+    @GetMapping("rating")
+    public Collection<EventFullDto> getRatingByCategory(@RequestParam Long categoryId) {
+        return eventPublicService.getRatingByCategory(categoryId);
+    }
 }

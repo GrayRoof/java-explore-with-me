@@ -60,4 +60,18 @@ public class EventPrivateController {
                                        @RequestBody StatusRequestDto statusRequestDto) {
         return eventPrivateService.setStatusToRequests(userId, eventId, statusRequestDto);
     }
+
+    @PostMapping("/reactions/{eventId}")
+    public EventReactionDto setReaction(@PathVariable long userId,
+                                    @PathVariable long eventId,
+                                    @RequestParam Boolean isPositive) {
+        return eventPrivateService.setReaction(userId, eventId, isPositive);
+    }
+
+    @DeleteMapping("/reactions/{eventId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReaction(@PathVariable long userId,
+                               @PathVariable long eventId) {
+        eventPrivateService.deleteReaction(userId, eventId);
+    }
 }
